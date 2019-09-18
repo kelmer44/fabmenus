@@ -25,10 +25,10 @@ class RadialFabMenu @JvmOverloads constructor(
 
     private val circlePaint: Paint
     private val circleBorder: Paint
-    lateinit var bezierEndAnimation: ValueAnimator
-    private val bezierAnimation: ValueAnimator
-    private val rotationAnimation: ValueAnimator
-    private val rotationReverseAnimation: ValueAnimator
+    private lateinit var bezierEndAnimation: ValueAnimator
+    private lateinit var bezierAnimation: ValueAnimator
+    private lateinit var rotationAnimation: ValueAnimator
+    private lateinit var rotationReverseAnimation: ValueAnimator
 
     private val fabButtonRadius: Int
     private val menuButtonRadius: Int

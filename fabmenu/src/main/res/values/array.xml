@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="drawable_array">
+
+        <item>@drawable/ic_audio_selector</item>
+        <item>@drawable/ic_video_selector</item>
+        <item>@drawable/ic_edit_selector</item>
+    </array>
+
+</resources>

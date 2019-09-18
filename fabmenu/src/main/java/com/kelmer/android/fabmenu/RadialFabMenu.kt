@@ -16,6 +16,9 @@ import androidx.core.content.ContextCompat
 import android.util.TypedValue
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.sin
 
 
 class RadialFabMenu @JvmOverloads constructor(
@@ -68,7 +71,7 @@ class RadialFabMenu @JvmOverloads constructor(
         }
     }
     private var rotationAngle: Float = 0f
-    private var isMenuVisible = true
+    private var isMenuVisible = false
 
 
     private val showAnimations = mutableListOf<ObjectAnimator>()
@@ -79,11 +82,21 @@ class RadialFabMenu @JvmOverloads constructor(
     lateinit var plusBitmap: Bitmap
     private var bezierConstant: Float = BEZIER_CONSTANT
 
+
+    var listener: MenuInterface? = null
+
+
     init {
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.RadialFabMenu, 0, 0)
         try {
-            fabButtonRadius = a.getDimension(R.styleable.RadialFabMenu_fab_radius, resources.getDimension(R.dimen.big_circle_radius)).toInt()
-            menuButtonRadius = a.getDimension(R.styleable.RadialFabMenu_menu_radius, resources.getDimension(R.dimen.small_circle_radius)).toInt()
+            fabButtonRadius = a.getDimension(
+                R.styleable.RadialFabMenu_fab_radius,
+                resources.getDimension(R.dimen.big_circle_radius)
+            ).toInt()
+            menuButtonRadius = a.getDimension(
+                R.styleable.RadialFabMenu_menu_radius,
+                resources.getDimension(R.dimen.small_circle_radius)
+            ).toInt()
 
             val outValue = TypedValue()
             // Read array of target drawables
@@ -157,23 +170,17 @@ class RadialFabMenu @JvmOverloads constructor(
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
-        val width = if (widthMode == MeasureSpec.EXACTLY) {
-            //Must be this size
-            widthSize
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            //Cant be bigger than
-            Math.min(desiredWidth, widthSize)
-        } else {
-            //can be whatever
-            desiredWidth
+        val width = when (widthMode) {
+            MeasureSpec.EXACTLY -> widthSize
+            MeasureSpec.AT_MOST -> min(desiredWidth, widthSize)
+            else -> //can be whatever
+                desiredWidth
         }
 
-        val height = if (heightMode == MeasureSpec.EXACTLY) {
-            heightSize
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            Math.min(desiredHeight, heightSize)
-        } else {
-            desiredHeight
+        val height = when (heightMode) {
+            MeasureSpec.EXACTLY -> heightSize
+            MeasureSpec.AT_MOST -> min(desiredHeight, heightSize)
+            else -> desiredHeight
         }
 
         setMeasuredDimension(width, height)
@@ -188,7 +195,7 @@ class RadialFabMenu @JvmOverloads constructor(
             menuItemPoints.add(
                 CirclePoint(
                     radius = gap.toFloat(),
-                    angle = ((Math.PI / numberOfItems + 1) * (i + 1))
+                    angle = ((Math.PI / (numberOfItems + 1)) * (i + 1))
                 )
             )
 
@@ -217,7 +224,7 @@ class RadialFabMenu @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         val toBitmap = AppCompatResources.getDrawable(context, R.drawable.ic_add)?.toBitmap()
-        if(toBitmap!=null) {
+        if (toBitmap != null) {
             plusBitmap = toBitmap
         }
 
@@ -320,7 +327,7 @@ class RadialFabMenu @JvmOverloads constructor(
                 val menuItem: Int = isMenuItemTouched(event)
                 if (isMenuVisible && menuItem > 0) {
                     if (menuItem <= drawables.size) {
-                        drawables[menuItemPoints.size - menuItem].setState(STATE_PRESSED)
+                        drawables[menuItemPoints.size - menuItem].state = STATE_PRESSED
                         invalidate()
                     }
                     return true
@@ -333,16 +340,28 @@ class RadialFabMenu @JvmOverloads constructor(
                     cancelAnimations()
                     if (isMenuVisible) {
                         startHideAnimation()
+                        listener?.menuClose()
                     } else {
                         startShowAnimation()
+                        listener?.menuOpen()
                     }
                     isMenuVisible = !isMenuVisible
                     return true
                 }
 
                 if (isMenuVisible) {
-
+                    val menuItem = isMenuItemTouched(event)
+                    invalidate()
+                    if (menuItem > 0) {
+                        if (menuItem <= drawables.size) {
+                            drawables[menuItemPoints.size - menuItem].state = STATE_ACTIVE
+                            postInvalidateDelayed(1000)
+                        }
+                        listener?.menuItemClicked(menuItem)
+                    }
+                    return true
                 }
+                return false
             }
         }
         return true
@@ -352,7 +371,15 @@ class RadialFabMenu @JvmOverloads constructor(
         if (!isMenuVisible) {
             return -1
         }
-
+        menuItemPoints.forEachIndexed { index, circlePoint ->
+            val x = gap * cos(circlePoint.angle) + centerX
+            val y = centerY - (gap * sin(circlePoint.angle))
+            if(event.x >= x - menuButtonRadius && event.y <= x + menuButtonRadius){
+                if(event.y >= y - menuButtonRadius && event.y <= y + menuButtonRadius){
+                    return menuItemPoints.size - index
+                }
+            }
+        }
 
         return -1
     }

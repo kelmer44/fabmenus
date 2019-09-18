@@ -1,6 +1,5 @@
-package com.kelmer.android.fabmenu
+package com.kelmer.android.fabmenu.radial
 
-import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
@@ -12,11 +11,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnticipateOvershootInterpolator
-import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
 import android.util.TypedValue
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
+import com.kelmer.android.fabmenu.MenuInterface
+import com.kelmer.android.fabmenu.R
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -63,14 +63,16 @@ class RadialFabMenu @JvmOverloads constructor(
 
 
     lateinit var plusBitmap: Bitmap
-    private var bezierConstant: Float = BEZIER_CONSTANT
+    private var bezierConstant: Float =
+        BEZIER_CONSTANT
 
 
     var listener: MenuInterface? = null
 
 
     init {
-        val a = context.theme.obtainStyledAttributes(attrs, R.styleable.RadialFabMenu, 0, 0)
+        val a = context.theme.obtainStyledAttributes(attrs,
+            R.styleable.RadialFabMenu, 0, 0)
         try {
             fabButtonRadius = a.getDimension(
                 R.styleable.RadialFabMenu_fab_radius,
@@ -104,24 +106,34 @@ class RadialFabMenu @JvmOverloads constructor(
         gap = resources.getDimensionPixelSize(R.dimen.default_gap)
 
         circlePaint = Paint()
-        circlePaint.color = ContextCompat.getColor(context, R.color.default_color)
+        circlePaint.color = ContextCompat.getColor(context,
+            R.color.default_color
+        )
         circlePaint.style = Paint.Style.FILL_AND_STROKE
 
 
         circleBorder = Paint(circlePaint)
         circleBorder.style = Paint.Style.STROKE
         circleBorder.strokeWidth = 1f
-        circleBorder.color = ContextCompat.getColor(context, R.color.default_color_dark)
+        circleBorder.color = ContextCompat.getColor(context,
+            R.color.default_color_dark
+        )
 
 
-        rotationAnimation = ValueAnimator.ofFloat(START_ANGLE, END_ANGLE)
+        rotationAnimation = ValueAnimator.ofFloat(
+            START_ANGLE,
+            END_ANGLE
+        )
         rotationAnimation.apply {
             duration = ANIMATION_DURATION / 4
             interpolator = AccelerateInterpolator()
             addUpdateListener(rotationUpdateListener)
         }
 
-        rotationReverseAnimation = ValueAnimator.ofFloat(END_ANGLE, START_ANGLE)
+        rotationReverseAnimation = ValueAnimator.ofFloat(
+            END_ANGLE,
+            START_ANGLE
+        )
         rotationReverseAnimation.apply {
             duration = ANIMATION_DURATION / 4
             interpolator = AccelerateInterpolator()
@@ -173,7 +185,8 @@ class RadialFabMenu @JvmOverloads constructor(
 
             val animShow = ObjectAnimator.ofFloat(menuItemPoints[i], "Radius", 0f, gap.toFloat())
             animShow.apply {
-                duration = ANIMATION_DURATION
+                duration =
+                    ANIMATION_DURATION
                 interpolator = AnticipateOvershootInterpolator()
                 startDelay = (ANIMATION_DURATION * (numberOfItems - i)) / 10
                 addUpdateListener(updateListener)
@@ -195,7 +208,9 @@ class RadialFabMenu @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        val toBitmap = AppCompatResources.getDrawable(context, R.drawable.ic_add)?.toBitmap()
+        val toBitmap = AppCompatResources.getDrawable(context,
+            R.drawable.ic_add
+        )?.toBitmap()
         if (toBitmap != null) {
             plusBitmap = toBitmap
         }
@@ -299,7 +314,8 @@ class RadialFabMenu @JvmOverloads constructor(
                 val menuItem: Int = isMenuItemTouched(event)
                 if (isMenuVisible && menuItem > 0) {
                     if (menuItem <= drawables.size) {
-                        drawables[menuItemPoints.size - menuItem].state = STATE_PRESSED
+                        drawables[menuItemPoints.size - menuItem].state =
+                            STATE_PRESSED
                         invalidate()
                     }
                     return true
@@ -327,7 +343,8 @@ class RadialFabMenu @JvmOverloads constructor(
                     invalidate()
                     if (menuItem > 0) {
                         if (menuItem <= drawables.size) {
-                            drawables[menuItemPoints.size - menuItem].state = STATE_ACTIVE
+                            drawables[menuItemPoints.size - menuItem].state =
+                                STATE_ACTIVE
                             postInvalidateDelayed(1000)
                         }
                         listener?.menuItemClicked(menuItem)

@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -28,10 +29,8 @@ class RadialFabMenu @JvmOverloads constructor(
 
     private val circlePaint: Paint
     private val circleBorder: Paint
-    private lateinit var bezierEndAnimation: ValueAnimator
-    private lateinit var bezierAnimation: ValueAnimator
-    private lateinit var rotationAnimation: ValueAnimator
-    private lateinit var rotationReverseAnimation: ValueAnimator
+    private var rotationAnimation: ValueAnimator
+    private var rotationReverseAnimation: ValueAnimator
 
     private val fabButtonRadius: Int
     private val menuButtonRadius: Int
@@ -53,23 +52,7 @@ class RadialFabMenu @JvmOverloads constructor(
         rotationAngle = valueAnimator.animatedValue as Float
         invalidate()
     }
-    private var bezierAnimationListener = object : Animator.AnimatorListener {
-        override fun onAnimationStart(animator: Animator) {
 
-        }
-
-        override fun onAnimationEnd(animator: Animator) {
-            bezierEndAnimation.start();
-        }
-
-        override fun onAnimationCancel(animator: Animator) {
-
-        }
-
-        override fun onAnimationRepeat(animator: Animator) {
-
-        }
-    }
     private var rotationAngle: Float = 0f
     private var isMenuVisible = false
 
@@ -130,21 +113,6 @@ class RadialFabMenu @JvmOverloads constructor(
         circleBorder.strokeWidth = 1f
         circleBorder.color = ContextCompat.getColor(context, R.color.default_color_dark)
 
-        bezierEndAnimation = ValueAnimator.ofFloat(BEZIER_CONSTANT + .2f, BEZIER_CONSTANT)
-        bezierEndAnimation.apply {
-            interpolator = LinearInterpolator()
-            duration = 300
-            addUpdateListener(bezierUpdateListener)
-        }
-
-        bezierAnimation = ValueAnimator.ofFloat(BEZIER_CONSTANT - .02f, BEZIER_CONSTANT + .2f)
-        bezierAnimation.apply {
-            duration = ANIMATION_DURATION / 4
-            repeatCount = 4
-            interpolator = LinearInterpolator()
-            addUpdateListener(bezierUpdateListener)
-            addListener(bezierAnimationListener)
-        }
 
         rotationAnimation = ValueAnimator.ofFloat(START_ANGLE, END_ANGLE)
         rotationAnimation.apply {
@@ -153,8 +121,12 @@ class RadialFabMenu @JvmOverloads constructor(
             addUpdateListener(rotationUpdateListener)
         }
 
-        rotationReverseAnimation = rotationAnimation.clone()
-        rotationReverseAnimation.reverse()
+        rotationReverseAnimation = ValueAnimator.ofFloat(END_ANGLE, START_ANGLE)
+        rotationReverseAnimation.apply {
+            duration = ANIMATION_DURATION / 4
+            interpolator = AccelerateInterpolator()
+            addUpdateListener(rotationUpdateListener)
+        }
 
     }
 
@@ -209,7 +181,7 @@ class RadialFabMenu @JvmOverloads constructor(
             showAnimations.add(animShow)
             val animHide = animShow.clone()
             animHide.apply {
-                reverse()
+                setFloatValues(gap.toFloat(), 0f)
                 startDelay = ANIMATION_DURATION * i / 10
             }
             hideAnimations.add(animHide)
@@ -336,7 +308,6 @@ class RadialFabMenu @JvmOverloads constructor(
             }
             MotionEvent.ACTION_UP -> {
                 if (isMenuTouch(event)) {
-                    bezierAnimation.start()
                     cancelAnimations()
                     if (isMenuVisible) {
                         startHideAnimation()
@@ -345,7 +316,9 @@ class RadialFabMenu @JvmOverloads constructor(
                         startShowAnimation()
                         listener?.menuOpen()
                     }
+
                     isMenuVisible = !isMenuVisible
+                    Log.i("FabMenu", "Just changed menu visibility to $isMenuVisible")
                     return true
                 }
 
@@ -374,8 +347,8 @@ class RadialFabMenu @JvmOverloads constructor(
         menuItemPoints.forEachIndexed { index, circlePoint ->
             val x = gap * cos(circlePoint.angle) + centerX
             val y = centerY - (gap * sin(circlePoint.angle))
-            if(event.x >= x - menuButtonRadius && event.y <= x + menuButtonRadius){
-                if(event.y >= y - menuButtonRadius && event.y <= y + menuButtonRadius){
+            if (event.x >= x - menuButtonRadius && event.y <= x + menuButtonRadius) {
+                if (event.y >= y - menuButtonRadius && event.y <= y + menuButtonRadius) {
                     return menuItemPoints.size - index
                 }
             }
@@ -392,6 +365,7 @@ class RadialFabMenu @JvmOverloads constructor(
     }
 
     private fun startHideAnimation() {
+        Log.w("FabMenu", "Start hiding animation!")
         rotationReverseAnimation.start()
         for (objectAnimator in hideAnimations) {
             objectAnimator.start()

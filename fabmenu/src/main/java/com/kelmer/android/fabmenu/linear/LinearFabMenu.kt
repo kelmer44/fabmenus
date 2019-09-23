@@ -2,18 +2,22 @@ package com.kelmer.android.fabmenu.linear
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.*
 import android.widget.ImageView
 import androidx.core.widget.TextViewCompat
+import com.kelmer.android.fabmenu.MenuInterface
 import com.kelmer.android.fabmenu.R
 import com.kelmer.android.fabmenu.Util.dpToPx
 import com.kelmer.android.fabmenu.fab.FloatingActionButton
@@ -57,6 +61,10 @@ class LinearFabMenu @JvmOverloads constructor(
 
     lateinit var imageToggle: ImageView
     private var icon: Drawable? = null
+    private var iconAnimated = true
+
+    private var iconToggleSet: AnimatorSet? = null
+
 
     private var openDirection: Int = 0
 
@@ -89,6 +97,23 @@ class LinearFabMenu @JvmOverloads constructor(
     private var buttonSpacing = dpToPx(0f).toInt()
 
     private var isAnimated = true
+
+
+    private var closeOnTouchOutside: Boolean = false
+
+    private var bgColor: Int
+
+
+    private lateinit var showBackgroundAnimator: ValueAnimator
+    private lateinit var mHideBackgroundAnimator: ValueAnimator
+
+
+    private val mUiHandler = Handler()
+    private val animationDelayPerItem: Long = 50L
+
+
+    private var toggleListener: MenuInterface? = null
+
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.LinearFabMenu, 0, 0)
@@ -153,6 +178,9 @@ class LinearFabMenu @JvmOverloads constructor(
         menuFabSize =
             a.getInt(R.styleable.LinearFabMenu_menu_fab_size, FloatingActionButton.SIZE_NORMAL)
 
+
+        bgColor =
+            a.getColor(R.styleable.LinearFabMenu_menu_backgroundColor, Color.TRANSPARENT)
 
         labelsContext = ContextThemeWrapper(context, labelsStyle)
 
@@ -328,7 +356,7 @@ class LinearFabMenu @JvmOverloads constructor(
         var nextY =
             if (openUp) menuButtonTop + menuButton.measuredHeight + buttonSpacing else menuButtonTop
 
-        for (i in buttonCount - 1..0) {
+        for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
 
             if (child == imageToggle) continue
@@ -442,8 +470,8 @@ class LinearFabMenu @JvmOverloads constructor(
             var left = labelsPaddingLeft
             var top = labelsPaddingTop
             if (labelsShowShadow) {
-                left += fab.shadowRadius + abs(fab.shadowXOffset)
-                top += fab.shadowRadius + abs(fab.shadowYOffset)
+                left += fab.shadowRadius.toInt() + abs(fab.shadowXOffset.toInt())
+                top += fab.shadowRadius.toInt() + abs(fab.shadowYOffset.toInt())
             }
 
             label.setPadding(left, top, labelsPaddingLeft, labelsPaddingTop)
@@ -462,6 +490,37 @@ class LinearFabMenu @JvmOverloads constructor(
 
     }
 
+    override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams =
+        MarginLayoutParams(context, attrs)
+
+
+    override fun generateLayoutParams(p: LayoutParams?): LayoutParams = MarginLayoutParams(p)
+
+
+    override fun generateDefaultLayoutParams(): LayoutParams =
+        MarginLayoutParams(MarginLayoutParams.WRAP_CONTENT, MarginLayoutParams.WRAP_CONTENT)
+
+
+    override fun checkLayoutParams(p: LayoutParams?): Boolean = p is MarginLayoutParams
+
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (closeOnTouchOutside) {
+            var handled = false
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    handled = isOpened()
+                }
+                MotionEvent.ACTION_UP -> {
+                    close(isAnimated)
+                    handled = true
+                }
+            }
+            return handled
+        }
+
+        return super.onTouchEvent(event)
+    }
 
     private fun toggle(animated: Boolean) {
         if (isOpened()) {
@@ -471,13 +530,107 @@ class LinearFabMenu @JvmOverloads constructor(
         }
     }
 
-    private fun isOpened(): Boolean {
-    }
+    private fun isOpened(): Boolean = menuOpened
 
     private fun open(animated: Boolean) {
+        if (!isOpened()) {
+            if (isBackgroundEnabled()) {
+                showBackgroundAnimator.start()
+            }
+
+            if (iconAnimated) {
+                if (iconToggleSet != null) {
+                    iconToggleSet?.start()
+                } else {
+                    closeAnimatorSet.cancel()
+                    openAnimatorSet.start()
+                }
+            }
+
+            var delay = 0L
+            var counter = 0
+            isMenuOpening = true
+            for (i in childCount - 1 downTo 0) {
+                val child = getChildAt(i)
+                if (child is FloatingActionButton && child.visibility != View.GONE) {
+                    counter++
+
+                    mUiHandler.postDelayed(object : Runnable {
+                        override fun run() {
+                            if (isOpened()) return
+
+                            if (child != menuButton) {
+                                child.show(animated)
+                            }
+
+                            val label = child.getTag(R.id.fab_label) as? Label
+                            if (label != null && label.isHandleVisibilityChanges()) {
+                                label.show(animated)
+                            }
+                        }
+                    }, delay)
+                    delay += animationDelayPerItem
+                }
+            }
+
+            mUiHandler.postDelayed({
+                menuOpened = true
+                toggleListener?.menuOpen()
+
+            }, ++counter * animationDelayPerItem)
+
+        }
     }
 
+    private fun isBackgroundEnabled(): Boolean = bgColor != Color.TRANSPARENT
+
     private fun close(animated: Boolean) {
+        if (isOpened()) {
+            if (isBackgroundEnabled()) {
+                mHideBackgroundAnimator.start()
+            }
+
+            if (iconAnimated) {
+                if (iconToggleSet != null) {
+                    iconToggleSet?.start()
+                } else {
+                    closeAnimatorSet.start()
+                    openAnimatorSet.cancel()
+                }
+            }
+
+            var delay = 0L
+            var counter = 0
+            isMenuOpening = false
+            for (i in 0 until childCount) {
+                val child = getChildAt(i)
+                if (child is FloatingActionButton && child.visibility != View.GONE) {
+                    counter++
+
+                    mUiHandler.postDelayed(object : Runnable {
+                        override fun run() {
+                            if (!isOpened()) return
+
+                            if (child != menuButton) {
+                                child.hide(animated)
+                            }
+
+                            val label = child.getTag(R.id.fab_label) as? Label
+                            if (label != null && label.isHandleVisibilityChanges()) {
+                                label.hide(animated)
+                            }
+                        }
+                    }, delay)
+                    delay += animationDelayPerItem
+                }
+            }
+
+            mUiHandler.postDelayed({
+                menuOpened = false
+                toggleListener?.menuClose()
+            }, ++counter * animationDelayPerItem)
+
+        }
     }
 
 
@@ -502,8 +655,23 @@ class LinearFabMenu @JvmOverloads constructor(
 
 
     private fun initBackgroundDimAnimation() {
+        val maxAlpha = Color.alpha(bgColor)
+        val red = Color.red(bgColor)
+        val green = Color.green(bgColor)
+        val blue = Color.blue(bgColor)
 
-
+        showBackgroundAnimator = ValueAnimator.ofInt(0, maxAlpha)
+        showBackgroundAnimator.duration = ANIMATION_DURATION
+        showBackgroundAnimator.addUpdateListener {
+            val alpha = it.animatedValue as Int
+            setBackgroundColor(Color.argb(alpha, red, green, blue))
+        }
+        showBackgroundAnimator = ValueAnimator.ofInt(maxAlpha, 0)
+        showBackgroundAnimator.duration = ANIMATION_DURATION
+        showBackgroundAnimator.addUpdateListener {
+            val alpha = it.animatedValue as Int
+            setBackgroundColor(Color.argb(alpha, red, green, blue))
+        }
     }
 
 

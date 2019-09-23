@@ -36,9 +36,9 @@ class FloatingActionButton @JvmOverloads constructor(
     var showShadow: Boolean
     var shadowColor: Int
     private val usingElevation: Boolean = false
-    var shadowRadius = dpToPx(4f).toInt()
-    var shadowXOffset = dpToPx(1f).toInt()
-    var shadowYOffset = dpToPx(3f).toInt()
+    var shadowRadius = dpToPx(4f)
+    var shadowXOffset = dpToPx(1f)
+    var shadowYOffset = dpToPx(3f)
 
     private val iconSize = dpToPx(24f).toInt()
     private val icon: Drawable? = null
@@ -212,7 +212,7 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
 
-    private fun hasShadow() = !usingElevation && showShadow
+    fun hasShadow() = !usingElevation && showShadow
 
     companion object {
 
@@ -335,4 +335,13 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     fun getOnClickListener(): OnClickListener? = clickListener
+    fun onActionUp() {
+
+
+    }
+
+    fun onActionDown() {
+
+
+    }
 }

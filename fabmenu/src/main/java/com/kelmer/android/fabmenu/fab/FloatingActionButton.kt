@@ -16,9 +16,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.kelmer.android.fabmenu.R
 import com.kelmer.android.fabmenu.Util
 import com.kelmer.android.fabmenu.Util.dpToPx
+import com.kelmer.android.fabmenu.Util.getColor
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -62,13 +64,16 @@ class FloatingActionButton @JvmOverloads constructor(
 
         fabSize = a.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL)
         showShadow = a.getBoolean(R.styleable.FloatingActionButton_fab_showShadow, true)
-        shadowColor = a.getColor(R.styleable.FloatingActionButton_fab_shadowColor, 0x66000000)
+        shadowColor = a.getColor(R.styleable.FloatingActionButton_fab_shadowColor, getColor(R.color.fab_shadow_color))
 
-        colorNormal = a.getColor(R.styleable.FloatingActionButton_fab_colorNormal, -0x25bcca)
-        colorPressed = a.getColor(R.styleable.FloatingActionButton_fab_colorPressed, -0x18afbd)
-        colorDisabled = a.getColor(R.styleable.FloatingActionButton_fab_colorDisabled, -0x555556)
-        colorRipple = a.getColor(R.styleable.FloatingActionButton_fab_colorRipple, -0x66000001)
-
+        colorNormal = a.getColor(R.styleable.FloatingActionButton_fab_colorNormal, getColor(R.color.fab_color_normal))
+        colorPressed = a.getColor(R.styleable.FloatingActionButton_fab_colorPressed, getColor(R.color.fab_color_pressed))
+        colorDisabled = a.getColor(R.styleable.FloatingActionButton_fab_colorDisabled, getColor(R.color.fab_color_disabled))
+        colorRipple = a.getColor(R.styleable.FloatingActionButton_fab_colorRipple, getColor(R.color.fab_color_ripple))
+        var text = a.getString(R.styleable.FloatingActionButton_fab_label)
+        if(!text.isNullOrBlank()){
+            labelText = text
+        }
 
         a.recycle()
 
@@ -86,13 +91,11 @@ class FloatingActionButton @JvmOverloads constructor(
 
     private fun calculateMeasuredWidth(): Int {
         val width = getCircleSize() + calculateShadowWidth()
-        //FIXME: Account for progressbar
         return width
     }
 
     private fun calculateMeasuredHeight(): Int {
         val height = getCircleSize() + calculateShadowHeight()
-        //FIXME: Account for progressbar
         return height
     }
 

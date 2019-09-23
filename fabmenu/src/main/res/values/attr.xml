@@ -26,7 +26,7 @@
 <!--        <attr name="fab_shadowYOffset" format="dimension" />-->
 <!--        <attr name="fab_showAnimation" format="reference" />-->
 <!--        <attr name="fab_hideAnimation" format="reference" />-->
-<!--        <attr name="fab_label" format="string" />-->
+        <attr name="fab_label" format="string" />
 <!--        <attr name="fab_elevationCompat" format="dimension" />-->
 <!--        <attr name="fab_progress_color" format="color" />-->
 <!--        <attr name="fab_progress_backgroundColor" format="color" />-->

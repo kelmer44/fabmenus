@@ -16,10 +16,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.*
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import com.kelmer.android.fabmenu.MenuInterface
 import com.kelmer.android.fabmenu.R
 import com.kelmer.android.fabmenu.Util.dpToPx
+import com.kelmer.android.fabmenu.Util.getColor
 import com.kelmer.android.fabmenu.fab.FloatingActionButton
 import com.kelmer.android.fabmenu.fab.Label
 import kotlin.math.abs
@@ -105,7 +107,7 @@ class LinearFabMenu @JvmOverloads constructor(
 
 
     private lateinit var showBackgroundAnimator: ValueAnimator
-    private lateinit var mHideBackgroundAnimator: ValueAnimator
+    private lateinit var hideBackgroundAnimator: ValueAnimator
 
 
     private val mUiHandler = Handler()
@@ -118,7 +120,8 @@ class LinearFabMenu @JvmOverloads constructor(
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.LinearFabMenu, 0, 0)
         menuShowShadow = a.getBoolean(R.styleable.LinearFabMenu_menu_showShadow, true)
-        menuShadowColor = a.getColor(R.styleable.LinearFabMenu_menu_shadowColor, 0x66000000)
+        menuShadowColor = a.getColor(R.styleable.LinearFabMenu_menu_shadowColor, getColor(R.color.fab_shadow_color))
+
         menuShadowRadius =
             a.getDimension(R.styleable.LinearFabMenu_menu_shadowRadius, menuShadowRadius)
         menuShadowXOffset =
@@ -126,9 +129,9 @@ class LinearFabMenu @JvmOverloads constructor(
         menuShadowYOffset =
             a.getDimension(R.styleable.LinearFabMenu_menu_shadowYOffset, menuShadowYOffset)
 
-        menuColorNormal = a.getColor(R.styleable.LinearFabMenu_menu_colorNormal, -0x25bcca)
-        menuColorPressed = a.getColor(R.styleable.LinearFabMenu_menu_colorPressed, -0x18afbd)
-        menuColorRipple = a.getColor(R.styleable.LinearFabMenu_menu_colorRipple, -0x66000001)
+        menuColorNormal = a.getColor(R.styleable.LinearFabMenu_menu_colorNormal, getColor(R.color.fab_color_normal))
+        menuColorPressed = a.getColor(R.styleable.LinearFabMenu_menu_colorPressed, getColor(R.color.fab_color_pressed))
+        menuColorRipple = a.getColor(R.styleable.LinearFabMenu_menu_colorRipple, getColor(R.color.fab_color_ripple))
 
         openDirection = a.getInt(R.styleable.LinearFabMenu_menu_openDirection, OPEN_UP)
         labelsPosition =
@@ -161,11 +164,11 @@ class LinearFabMenu @JvmOverloads constructor(
 
 
         labelsColorNormal =
-            a.getColor(R.styleable.LinearFabMenu_menu_labels_colorNormal, -0xcccccd)
+            a.getColor(R.styleable.LinearFabMenu_menu_labels_colorNormal, getColor(R.color.fab_label_normal))
         labelsColorPressed =
-            a.getColor(R.styleable.LinearFabMenu_menu_labels_colorPressed, -0xbbbbbc)
+            a.getColor(R.styleable.LinearFabMenu_menu_labels_colorPressed, getColor(R.color.fab_label_pressed))
         labelsColorRipple =
-            a.getColor(R.styleable.LinearFabMenu_menu_labels_colorRipple, 0x66FFFFFF)
+            a.getColor(R.styleable.LinearFabMenu_menu_labels_colorRipple, getColor(R.color.fab_label_ripple))
 
 
         if (a.hasValue(R.styleable.LinearFabMenu_menu_fab_label)) {
@@ -587,7 +590,7 @@ class LinearFabMenu @JvmOverloads constructor(
     private fun close(animated: Boolean) {
         if (isOpened()) {
             if (isBackgroundEnabled()) {
-                mHideBackgroundAnimator.start()
+                hideBackgroundAnimator.start()
             }
 
             if (iconAnimated) {
@@ -666,9 +669,9 @@ class LinearFabMenu @JvmOverloads constructor(
             val alpha = it.animatedValue as Int
             setBackgroundColor(Color.argb(alpha, red, green, blue))
         }
-        showBackgroundAnimator = ValueAnimator.ofInt(maxAlpha, 0)
-        showBackgroundAnimator.duration = ANIMATION_DURATION
-        showBackgroundAnimator.addUpdateListener {
+        hideBackgroundAnimator = ValueAnimator.ofInt(maxAlpha, 0)
+        hideBackgroundAnimator.duration = ANIMATION_DURATION
+        hideBackgroundAnimator.addUpdateListener {
             val alpha = it.animatedValue as Int
             setBackgroundColor(Color.argb(alpha, red, green, blue))
         }

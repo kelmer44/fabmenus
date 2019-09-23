@@ -4,4 +4,17 @@
     
     <color name="default_color">#ff0000</color>
     <color name="default_color_dark">#440000</color>
+
+
+
+    <color name="fab_color_normal">#DA4336</color>
+    <color name="fab_color_pressed">#E75043</color>
+    <color name="fab_color_disabled">#AAAAAA</color>
+    <color name="fab_color_ripple">#99FFFFFF</color>
+    <color name="fab_shadow_color">#66000000</color>
+
+
+    <color name="fab_label_normal">#FF333333</color>
+    <color name="fab_label_pressed">#FF444444</color>
+    <color name="fab_label_ripple">#66FFFFFF</color>
 </resources>

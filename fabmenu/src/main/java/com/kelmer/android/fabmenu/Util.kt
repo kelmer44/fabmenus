@@ -2,6 +2,8 @@ package com.kelmer.android.fabmenu
 
 import android.os.Build
 import android.view.View
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import kotlin.math.round
 
 object Util {
@@ -9,4 +11,6 @@ object Util {
 
     fun isJellyBean() =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
     fun isLollipop() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+
+    fun View.getColor(@ColorRes color: Int) = ContextCompat.getColor(context, color)
 }

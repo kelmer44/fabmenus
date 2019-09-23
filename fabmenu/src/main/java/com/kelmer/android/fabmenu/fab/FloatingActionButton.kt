@@ -2,19 +2,25 @@ package com.kelmer.android.fabmenu.fab
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.*
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.*
+import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.shapes.Shape
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
+import android.widget.TextView
 import com.kelmer.android.fabmenu.R
+import com.kelmer.android.fabmenu.Util
 import com.kelmer.android.fabmenu.Util.dpToPx
 import kotlin.math.abs
+import kotlin.math.max
 
 class FloatingActionButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -23,17 +29,32 @@ class FloatingActionButton @JvmOverloads constructor(
 
     private val fabSize: Int
 
-    private val showAnimation: Animation
-    private val hideAnimation: Animation
+    var showAnimation: Animation
+    var hideAnimation: Animation
 
 
-    private val shadowColor: Int
-    private val showShadow: Boolean
+    var showShadow: Boolean
+    var shadowColor: Int
     private val usingElevation: Boolean = false
-    private val shadowRadius = dpToPx(4f)
-    private val shadowXOffset = dpToPx(1f)
-    private val shadowYOffset = dpToPx(3f)
+    var shadowRadius = dpToPx(4f).toInt()
+    var shadowXOffset = dpToPx(1f).toInt()
+    var shadowYOffset = dpToPx(3f).toInt()
 
+    private val iconSize = dpToPx(24f).toInt()
+    private val icon: Drawable? = null
+
+
+    private var colorNormal: Int
+    private var colorPressed: Int
+    private var colorDisabled: Int
+    private var colorRipple: Int
+
+
+    private var bgDrawable: Drawable? = null
+    private var labelText: String = ""
+
+
+    private var clickListener: View.OnClickListener? = null
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, 0, 0)
@@ -42,6 +63,13 @@ class FloatingActionButton @JvmOverloads constructor(
         fabSize = a.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL)
         showShadow = a.getBoolean(R.styleable.FloatingActionButton_fab_showShadow, true)
         shadowColor = a.getColor(R.styleable.FloatingActionButton_fab_shadowColor, 0x66000000)
+
+        colorNormal = a.getColor(R.styleable.FloatingActionButton_fab_colorNormal, -0x25bcca)
+        colorPressed = a.getColor(R.styleable.FloatingActionButton_fab_colorPressed, -0x18afbd)
+        colorDisabled = a.getColor(R.styleable.FloatingActionButton_fab_colorDisabled, -0x555556)
+        colorRipple = a.getColor(R.styleable.FloatingActionButton_fab_colorRipple, -0x66000001)
+
+
         a.recycle()
 
 
@@ -98,12 +126,89 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     fun updateBackground() {
-        val layerDrawable = if(hasShadow()){
-            LayerDrawable([Shadow])
+        val layerDrawable = if (hasShadow()) {
+            LayerDrawable(arrayOf(Shadow(), createFillDrawable(), getIconDrawable()))
+        } else {
+            LayerDrawable(arrayOf(createFillDrawable(), getIconDrawable()))
         }
-        else {
-            LayerDrawable()
+
+        val iconDrawable = getIconDrawable()
+        val iconSize = if (iconDrawable != null) {
+            max(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight)
+        } else {
+            -1
         }
+
+        val iconOffset = (getCircleSize() - (if (iconSize > 0) iconSize else this.iconSize)) / 2
+        val circleInsetHorizontal: Int =
+            if (hasShadow()) (shadowRadius + abs(shadowXOffset)).toInt() else 0
+        val circleInsetVertical: Int =
+            if (hasShadow()) (shadowRadius + abs(shadowYOffset)).toInt() else 0
+
+        layerDrawable.setLayerInset(
+            if (hasShadow()) 2 else 1,
+            circleInsetHorizontal + iconOffset,
+            circleInsetVertical + iconOffset,
+            circleInsetHorizontal + iconOffset,
+            circleInsetVertical + iconOffset
+        )
+
+        setBackgroundCompat(layerDrawable)
+    }
+
+    @Suppress("DEPRECATION")
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private fun setBackgroundCompat(drawable: Drawable) {
+        if (Util.isJellyBean()) {
+            background = drawable
+        } else {
+            setBackgroundDrawable(drawable)
+        }
+    }
+
+
+    private fun getIconDrawable(): Drawable = icon ?: ColorDrawable(Color.TRANSPARENT)
+
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun createFillDrawable(): Drawable {
+        val drawable = StateListDrawable()
+        drawable.addState(
+            intArrayOf(-android.R.attr.state_enabled),
+            createCircleDrawable(colorDisabled)
+        )
+        drawable.addState(
+            intArrayOf(-android.R.attr.state_pressed),
+            createCircleDrawable(colorPressed)
+        )
+        drawable.addState(intArrayOf(), createCircleDrawable(colorNormal))
+
+        if (Util.isLollipop()) {
+            val ripple: RippleDrawable = RippleDrawable(
+                ColorStateList(
+                    arrayOf(intArrayOf()),
+                    intArrayOf(colorRipple)
+                ), drawable, null
+            )
+            outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    outline.setOval(0, 0, view.width, view.height)
+                }
+            }
+
+            clipToOutline = true
+            bgDrawable = ripple
+            return ripple
+        }
+
+        bgDrawable = drawable
+        return drawable
+    }
+
+    private fun createCircleDrawable(color: Int): Drawable {
+        val shapeDrawable = CircleDrawable(OvalShape())
+        shapeDrawable.paint.color = color
+        return shapeDrawable
     }
 
 
@@ -117,11 +222,43 @@ class FloatingActionButton @JvmOverloads constructor(
 
     }
 
+
+    fun setLabelText(text: String) {
+        labelText = text
+        getLabelView()?.text = text
+    }
+
+    private fun getLabelView(): TextView? = getTag(R.id.fab_label) as? Label
+
+
+    private inner class CircleDrawable(s: Shape) : ShapeDrawable(s) {
+
+        private var circleInsetHorizontal: Int = 0
+        private var circleInsetVertical: Int = 0
+
+
+        init {
+            circleInsetHorizontal =
+                if (hasShadow()) (shadowColor + abs(shadowXOffset)).toInt() else 0
+            circleInsetVertical = if (hasShadow()) (shadowColor + abs(shadowYOffset)).toInt() else 0
+        }
+
+        override fun draw(canvas: Canvas) {
+            setBounds(
+                circleInsetHorizontal,
+                circleInsetVertical,
+                calculateMeasuredWidth() - circleInsetHorizontal,
+                calculateMeasuredHeight() - circleInsetVertical
+            )
+            super.draw(canvas)
+        }
+    }
+
     inner class Shadow : Drawable() {
         private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         private val erase = Paint(Paint.ANTI_ALIAS_FLAG)
 
-        private val radius : Float
+        private val radius: Float
 
 
         init {
@@ -130,7 +267,7 @@ class FloatingActionButton @JvmOverloads constructor(
 
             erase.xfermode = PORTER_DUFF_CLEAR
 
-            if(!isInEditMode){
+            if (!isInEditMode) {
                 paint.setShadowLayer(shadowRadius, shadowXOffset, shadowYOffset, shadowColor)
             }
 
@@ -149,9 +286,53 @@ class FloatingActionButton @JvmOverloads constructor(
 
         override fun getOpacity(): Int = PixelFormat.OPAQUE
 
-        override fun setColorFilter(colorFilter: ColorFilter) {
+        override fun setColorFilter(colorFilter: ColorFilter?) {
         }
-
-
     }
+
+    internal fun setColors(colorNormal: Int, colorPressed: Int, colorRipple: Int) {
+        this.colorNormal = colorNormal
+        this.colorPressed = colorPressed
+        this.colorRipple = colorRipple
+    }
+
+    /**
+     * Makes FAB disappear setting its visibility to INVISIBLE
+     */
+    fun hide(animate: Boolean) {
+        if (!isHidden()) {
+            if (animate) {
+                playHideAnimation()
+            }
+            super.setVisibility(View.INVISIBLE)
+        }
+    }
+
+    fun show(animate: Boolean){
+        if(isHidden()){
+            if(animate){
+                playShowAnimation()
+            }
+            super.setVisibility(View.VISIBLE)
+        }
+    }
+
+    fun isHidden() = visibility == View.INVISIBLE
+
+
+    fun playShowAnimation(){
+        hideAnimation.cancel()
+        startAnimation(showAnimation)
+    }
+
+    fun playHideAnimation(){
+        showAnimation.cancel()
+        startAnimation(hideAnimation)
+    }
+
+    fun getLabelText(): String {
+        return labelText
+    }
+
+    fun getOnClickListener(): OnClickListener? = clickListener
 }

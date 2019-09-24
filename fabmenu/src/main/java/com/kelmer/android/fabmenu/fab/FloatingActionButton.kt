@@ -52,9 +52,6 @@ class FloatingActionButton @JvmOverloads constructor(
     private var bgDrawable: Drawable? = null
     private var labelText: String = ""
 
-    private var buttonPositionSaved = false
-    private var originalX = -1f
-    private var originalY = -1f
 
 
     private var clickListener: View.OnClickListener? = null
@@ -109,7 +106,6 @@ class FloatingActionButton @JvmOverloads constructor(
 
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        saveButtonOriginalPosition()
         super.onSizeChanged(w, h, oldw, oldh)
         updateBackground()
     }
@@ -197,21 +193,6 @@ class FloatingActionButton @JvmOverloads constructor(
         }
     }
 
-    private fun saveButtonOriginalPosition() {
-        if (!buttonPositionSaved) {
-            if (originalX == -1f) {
-                originalX = x
-            }
-
-            if (originalY == -1f) {
-                originalY = y
-            }
-
-            buttonPositionSaved = true
-        }
-
-    }
-
 
     fun playShowAnimation() {
         hideAnimation.cancel()
@@ -272,17 +253,16 @@ class FloatingActionButton @JvmOverloads constructor(
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (isEnabled) {
+        if (clickListener!=null && isEnabled) {
             val label = getTag(R.id.fab_label) as? Label ?: return super.onTouchEvent(event)
 
-            val action = event.action
-            when (action) {
+            when (event.action) {
                 MotionEvent.ACTION_UP -> {
-                    label?.onActionUp()
+                    label.onActionUp()
                     onActionUp()
                 }
                 MotionEvent.ACTION_CANCEL -> {
-                    label?.onActionUp()
+                    label.onActionUp()
                     onActionUp()
                 }
             }
@@ -359,10 +339,10 @@ class FloatingActionButton @JvmOverloads constructor(
 
         private val radius: Float
 
-
         init {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null)
             paint.style = Paint.Style.FILL
+            paint.color = colorNormal
 
             erase.xfermode = PORTER_DUFF_CLEAR
 
@@ -382,7 +362,7 @@ class FloatingActionButton @JvmOverloads constructor(
         override fun setAlpha(alpha: Int) {
         }
 
-        override fun getOpacity(): Int = 0
+        override fun getOpacity(): Int = PixelFormat.UNKNOWN
 
         override fun setColorFilter(colorFilter: ColorFilter?) {
         }
@@ -418,5 +398,12 @@ class FloatingActionButton @JvmOverloads constructor(
 
     fun getOnClickListener(): OnClickListener? = clickListener
 
+    override fun setOnClickListener(l: OnClickListener?){
+
+        clickListener = l
+        (getTag(R.id.fab_label) as? View)?.setOnClickListener {
+            clickListener?.onClick(this@FloatingActionButton)
+        }
+    }
 
 }

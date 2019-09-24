@@ -9,11 +9,13 @@ import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.Shape
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.kelmer.android.fabmenu.R
 import com.kelmer.android.fabmenu.Util
 import com.kelmer.android.fabmenu.Util.dpToPx
@@ -40,7 +42,7 @@ class FloatingActionButton @JvmOverloads constructor(
     var shadowYOffset = dpToPx(3f)
 
     private val iconSize = dpToPx(24f).toInt()
-    private val icon: Drawable? = null
+    private var icon: Drawable? = null
 
 
     private var colorNormal: Int
@@ -118,10 +120,13 @@ class FloatingActionButton @JvmOverloads constructor(
             LayerDrawable(arrayOf(createFillDrawable(), getIconDrawable()))
         }
 
+
+
         val iconDrawable = getIconDrawable()
         var iconSize = max(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight)
-
+        Log.w("ICONSIZE", "Icon with label $labelText has iconSize = $iconSize")
         val iconOffset = (getCircleSize() - (if (iconSize > 0) iconSize else this.iconSize)) / 2
+        Log.w("ICONSIZE", "Icon with label $labelText has iconOffset = $iconOffset")
         val circleInsetHorizontal: Int =
             if (hasShadow()) (shadowRadius + abs(shadowXOffset)).toInt() else 0
         val circleInsetVertical: Int =
@@ -187,7 +192,7 @@ class FloatingActionButton @JvmOverloads constructor(
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun setBackgroundCompat(drawable: Drawable) {
         if (Util.isJellyBean()) {
-            background = drawable
+            setBackground(drawable)
         } else {
             setBackgroundDrawable(drawable)
         }
@@ -423,6 +428,21 @@ class FloatingActionButton @JvmOverloads constructor(
         val label = getTag(R.id.fab_label) as? Label
         if (label != null) {
             label.isEnabled = enabled
+        }
+    }
+
+    override fun setImageDrawable(drawable: Drawable?) {
+        if (icon !== drawable) {
+            icon = drawable
+            updateBackground()
+        }
+    }
+
+    override fun setImageResource(resId: Int) {
+        val drawable = ContextCompat.getDrawable(context, resId)
+        if (icon !== drawable) {
+            icon = drawable
+            updateBackground()
         }
     }
 }

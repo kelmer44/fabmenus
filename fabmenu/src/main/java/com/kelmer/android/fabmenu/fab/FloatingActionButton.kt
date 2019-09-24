@@ -62,29 +62,13 @@ class FloatingActionButton @JvmOverloads constructor(
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, 0, 0)
 
-        colorNormal = a.getColor(
-            R.styleable.FloatingActionButton_fab_colorNormal,
-            getColor(R.color.fab_color_normal)
-        )
-        colorPressed = a.getColor(
-            R.styleable.FloatingActionButton_fab_colorPressed,
-            getColor(R.color.fab_color_pressed)
-        )
-        colorDisabled = a.getColor(
-            R.styleable.FloatingActionButton_fab_colorDisabled,
-            getColor(R.color.fab_color_disabled)
-        )
-        colorRipple = a.getColor(
-            R.styleable.FloatingActionButton_fab_colorRipple,
-            getColor(R.color.fab_color_ripple)
-        )
+        colorNormal = a.getColor(R.styleable.FloatingActionButton_fab_colorNormal, getColor(R.color.fab_color_normal))
+        colorPressed = a.getColor(R.styleable.FloatingActionButton_fab_colorPressed, getColor(R.color.fab_color_pressed))
+        colorDisabled = a.getColor(R.styleable.FloatingActionButton_fab_colorDisabled, getColor(R.color.fab_color_disabled))
+        colorRipple = a.getColor(R.styleable.FloatingActionButton_fab_colorRipple, getColor(R.color.fab_color_ripple))
 
         showShadow = a.getBoolean(R.styleable.FloatingActionButton_fab_showShadow, true)
-        shadowColor = a.getColor(
-            R.styleable.FloatingActionButton_fab_shadowColor,
-            getColor(R.color.fab_shadow_color)
-        )
-
+        shadowColor = a.getColor(R.styleable.FloatingActionButton_fab_shadowColor, getColor(R.color.fab_shadow_color))
 
         fabSize = a.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL)
 
@@ -94,7 +78,6 @@ class FloatingActionButton @JvmOverloads constructor(
         }
 
         a.recycle()
-
 
         showAnimation = AnimationUtils.loadAnimation(context, R.anim.fab_scale_up)
         hideAnimation = AnimationUtils.loadAnimation(context, R.anim.fab_scale_down)
@@ -398,7 +381,6 @@ class FloatingActionButton @JvmOverloads constructor(
 
             radius = getCircleSize() / 2f
 
-            //FIXME: STuff for progress bar
         }
 
         override fun draw(canvas: Canvas) {
@@ -409,7 +391,7 @@ class FloatingActionButton @JvmOverloads constructor(
         override fun setAlpha(alpha: Int) {
         }
 
-        override fun getOpacity(): Int = PixelFormat.OPAQUE
+        override fun getOpacity(): Int = 0
 
         override fun setColorFilter(colorFilter: ColorFilter?) {
         }

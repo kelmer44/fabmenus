@@ -360,7 +360,7 @@ class Label @JvmOverloads constructor(
         }
 
         override fun getOpacity(): Int {
-            return PixelFormat.OPAQUE
+            return PixelFormat.TRANSLUCENT
         }
     }
 

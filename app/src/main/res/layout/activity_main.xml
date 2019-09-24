@@ -37,6 +37,7 @@
         app:fab_colorRipple="@android:color/holo_red_light"
         app:fab_label="My menu"
         app:fab_showShadow="false"
+        android:elevation="4dp"
         android:src="@drawable/ic_edit"
         />
 
@@ -57,48 +58,49 @@
         app:fab_colorRipple="@android:color/holo_red_light"
         app:fab_label="My menu"
         app:fab_size="mini"
+        android:elevation="4dp"
         android:src="@drawable/ic_camera_light"
         />
-<!--    <com.kelmer.android.fabmenu.linear.LinearFabMenu-->
-<!--        android:id="@+id/menu_red"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:padding="10dp"-->
-<!--        app:menu_showShadow="false"-->
-<!--        app:menu_backgroundColor="#ccffffff"-->
-<!--        app:menu_fab_label="Menu label">-->
+    <com.kelmer.android.fabmenu.linear.LinearFabMenu
+        android:id="@+id/menu_red"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:padding="10dp"
+        app:menu_showShadow="false"
+        app:menu_backgroundColor="#ccffffff"
+        app:menu_fab_label="Menu label">
 
-<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--            android:id="@+id/fab1"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:src="@drawable/ic_camera_light"-->
-<!--            app:fab_colorNormal="@android:color/holo_purple"-->
-<!--            app:fab_size="mini"-->
-<!--            app:fab_label="Pollas" />-->
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera_light"
+            app:fab_colorNormal="@android:color/holo_purple"
+            app:fab_size="mini"
+            app:fab_label="Pollas" />
 
-<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--            android:id="@+id/fab2"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:src="@drawable/ic_close"-->
-<!--            app:fab_colorNormal="@android:color/holo_green_dark"-->
-<!--            app:fab_size="mini"-->
-<!--            app:fab_label="En Vinegar" />-->
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            app:fab_colorNormal="@android:color/holo_green_dark"
+            app:fab_size="mini"
+            app:fab_label="En Vinegar" />
 
-<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--            android:id="@+id/fab3"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:src="@drawable/ic_star"-->
-<!--            app:fab_colorNormal="@android:color/holo_blue_dark"-->
-<!--            app:fab_size="mini"-->
-<!--            app:fab_label="Y salmuera" />-->
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/fab3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_star"
+            app:fab_colorNormal="@android:color/holo_blue_dark"
+            app:fab_size="mini"
+            app:fab_label="Y salmuera" />
 
 
-<!--    </com.kelmer.android.fabmenu.linear.LinearFabMenu>-->
+    </com.kelmer.android.fabmenu.linear.LinearFabMenu>
 
 
 

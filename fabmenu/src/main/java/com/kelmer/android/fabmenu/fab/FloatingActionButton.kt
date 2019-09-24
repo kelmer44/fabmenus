@@ -114,11 +114,6 @@ class FloatingActionButton @JvmOverloads constructor(
         updateBackground()
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
-        super.setLayoutParams(params)
-    }
 
     fun updateBackground() {
         val layerDrawable = if (hasShadow()) {
@@ -128,11 +123,7 @@ class FloatingActionButton @JvmOverloads constructor(
         }
 
         val iconDrawable = getIconDrawable()
-        var iconSize = -1
-
-        if (iconDrawable != null) {
-            iconSize = max(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight)
-        }
+        var iconSize = max(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight)
 
         val iconOffset = (getCircleSize() - (if (iconSize > 0) iconSize else this.iconSize)) / 2
         val circleInsetHorizontal: Int =
@@ -163,7 +154,7 @@ class FloatingActionButton @JvmOverloads constructor(
             createCircleDrawable(colorDisabled)
         )
         drawable.addState(
-            intArrayOf(-android.R.attr.state_pressed),
+            intArrayOf(android.R.attr.state_pressed),
             createCircleDrawable(colorPressed)
         )
         drawable.addState(intArrayOf(), createCircleDrawable(colorNormal))

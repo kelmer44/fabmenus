@@ -44,9 +44,9 @@ class LinearFabMenu @JvmOverloads constructor(
 
     private var menuShowShadow: Boolean = false
     private var menuShadowColor: Int = 0
-    private var menuShadowRadius = 4f
-    private var menuShadowXOffset = 1f
-    private var menuShadowYOffset = 3f
+    private var menuShadowRadius = dpToPx(4f)
+    private var menuShadowXOffset = dpToPx(1f)
+    private var menuShadowYOffset = dpToPx(3f)
 
     private var menuColorNormal: Int
     private var menuColorPressed: Int
@@ -216,9 +216,9 @@ class LinearFabMenu @JvmOverloads constructor(
 
         menuButton.showShadow = menuShowShadow
         if (menuShowShadow) {
-            menuButton.shadowRadius = dpToPx(menuShadowRadius)
-            menuButton.shadowXOffset = dpToPx(menuShadowXOffset)
-            menuButton.shadowYOffset = dpToPx(menuShadowYOffset)
+            menuButton.shadowRadius = menuShadowRadius.toInt()
+            menuButton.shadowXOffset = menuShadowXOffset.toInt()
+            menuButton.shadowYOffset = menuShadowYOffset.toInt()
         }
         menuButton.setColors(menuColorNormal, menuColorPressed, menuColorRipple)
         menuButton.shadowColor = menuShadowColor;

@@ -36,10 +36,10 @@ class FloatingActionButton @JvmOverloads constructor(
 
     var showShadow: Boolean
     var shadowColor: Int
-    private val usingElevation: Boolean = false
-    var shadowRadius = dpToPx(4f)
-    var shadowXOffset = dpToPx(1f)
-    var shadowYOffset = dpToPx(3f)
+    private var usingElevation: Boolean = false
+    var shadowRadius: Int = dpToPx(4f).toInt()
+    var shadowXOffset: Int = dpToPx(1f).toInt()
+    var shadowYOffset: Int = dpToPx(3f).toInt()
 
     private val iconSize = dpToPx(24f).toInt()
     private var icon: Drawable? = null
@@ -55,19 +55,33 @@ class FloatingActionButton @JvmOverloads constructor(
     private var labelText: String = ""
 
 
-
     private var clickListener: View.OnClickListener? = null
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, 0, 0)
 
-        colorNormal = a.getColor(R.styleable.FloatingActionButton_fab_colorNormal, getColor(R.color.fab_color_normal))
-        colorPressed = a.getColor(R.styleable.FloatingActionButton_fab_colorPressed, getColor(R.color.fab_color_pressed))
-        colorDisabled = a.getColor(R.styleable.FloatingActionButton_fab_colorDisabled, getColor(R.color.fab_color_disabled))
-        colorRipple = a.getColor(R.styleable.FloatingActionButton_fab_colorRipple, getColor(R.color.fab_color_ripple))
+        colorNormal = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorNormal,
+            getColor(R.color.fab_color_normal)
+        )
+        colorPressed = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorPressed,
+            getColor(R.color.fab_color_pressed)
+        )
+        colorDisabled = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorDisabled,
+            getColor(R.color.fab_color_disabled)
+        )
+        colorRipple = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorRipple,
+            getColor(R.color.fab_color_ripple)
+        )
 
         showShadow = a.getBoolean(R.styleable.FloatingActionButton_fab_showShadow, true)
-        shadowColor = a.getColor(R.styleable.FloatingActionButton_fab_shadowColor, getColor(R.color.fab_shadow_color))
+        shadowColor = a.getColor(
+            R.styleable.FloatingActionButton_fab_shadowColor,
+            getColor(R.color.fab_shadow_color)
+        )
 
         fabSize = a.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL)
 
@@ -115,23 +129,29 @@ class FloatingActionButton @JvmOverloads constructor(
 
     fun updateBackground() {
         val layerDrawable = if (hasShadow()) {
-            LayerDrawable(arrayOf(Shadow(), createFillDrawable(), getIconDrawable()))
+            LayerDrawable(arrayOf<Drawable>(Shadow(), createFillDrawable(), getIconDrawable()))
         } else {
-            LayerDrawable(arrayOf(createFillDrawable(), getIconDrawable()))
+            LayerDrawable(arrayOf<Drawable>(createFillDrawable(), getIconDrawable()))
         }
 
 
+        var iconSize = -1
 
-        val iconDrawable = getIconDrawable()
-        var iconSize = max(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight)
+        if (getIconDrawable() != null) {
+            iconSize = max(getIconDrawable().intrinsicWidth, getIconDrawable().intrinsicHeight)
+        }
         Log.w("ICONSIZE", "Icon with label $labelText has iconSize = $iconSize")
         val iconOffset = (getCircleSize() - (if (iconSize > 0) iconSize else this.iconSize)) / 2
         Log.w("ICONSIZE", "Icon with label $labelText has iconOffset = $iconOffset")
         val circleInsetHorizontal: Int =
-            if (hasShadow()) (shadowRadius + abs(shadowXOffset)).toInt() else 0
+            if (hasShadow()) (shadowRadius + abs(shadowXOffset)) else 0
         val circleInsetVertical: Int =
-            if (hasShadow()) (shadowRadius + abs(shadowYOffset)).toInt() else 0
+            if (hasShadow()) (shadowRadius + abs(shadowYOffset)) else 0
 
+        Log.w(
+            "ICONSIZE",
+            "Icon with label " + getLabelText() + " has insethorizontal = " + circleInsetHorizontal + " and vertical " + circleInsetVertical
+        )
         layerDrawable.setLayerInset(
             if (hasShadow()) 2 else 1,
             circleInsetHorizontal + iconOffset,
@@ -198,6 +218,17 @@ class FloatingActionButton @JvmOverloads constructor(
         }
     }
 
+    override fun setElevation(elevation: Float) {
+        if (Util.isLollipop() && elevation > 0) {
+            super.setElevation(elevation)
+            if (!isInEditMode) {
+                usingElevation = true
+                showShadow = false
+            }
+            updateBackground()
+        }
+    }
+
 
     fun playShowAnimation() {
         hideAnimation.cancel()
@@ -258,7 +289,7 @@ class FloatingActionButton @JvmOverloads constructor(
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (clickListener!=null && isEnabled) {
+        if (clickListener != null && isEnabled) {
             val label = getTag(R.id.fab_label) as? Label ?: return super.onTouchEvent(event)
 
             when (event.action) {
@@ -278,24 +309,25 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
 
-    private val gestureDetector = object : GestureDetector(context, object : SimpleOnGestureListener() {
+    private val gestureDetector =
+        object : GestureDetector(context, object : SimpleOnGestureListener() {
 
-        override fun onDown(e: MotionEvent?): Boolean {
-            val label = getTag(R.id.fab_label) as? Label
-            label?.onActionDown()
-            onActionDown()
-            return super.onDown(e)
-        }
+            override fun onDown(e: MotionEvent?): Boolean {
+                val label = getTag(R.id.fab_label) as? Label
+                label?.onActionDown()
+                onActionDown()
+                return super.onDown(e)
+            }
 
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
-            val label = getTag(R.id.fab_label) as? Label
-            label?.onActionUp()
-            onActionUp()
-            return super.onSingleTapUp(e)
-        }
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                val label = getTag(R.id.fab_label) as? Label
+                label?.onActionUp()
+                onActionUp()
+                return super.onSingleTapUp(e)
+            }
 
 
-    }){}
+        }) {}
 
 
     fun hasShadow() = !usingElevation && showShadow
@@ -342,20 +374,20 @@ class FloatingActionButton @JvmOverloads constructor(
         private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         private val erase = Paint(Paint.ANTI_ALIAS_FLAG)
 
-        private val radius: Float
+        private val radius: Float = getCircleSize() / 2f
 
         init {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null)
             paint.style = Paint.Style.FILL
+
+            Log.i("Color", "Color of the shadow paint $colorNormal")
             paint.color = colorNormal
 
             erase.xfermode = PORTER_DUFF_CLEAR
 
             if (!isInEditMode) {
-                paint.setShadowLayer(shadowRadius, shadowXOffset, shadowYOffset, shadowColor)
+                paint.setShadowLayer(shadowRadius.toFloat(), shadowXOffset.toFloat(), shadowYOffset.toFloat(), shadowColor)
             }
-
-            radius = getCircleSize() / 2f
 
         }
 
@@ -367,7 +399,7 @@ class FloatingActionButton @JvmOverloads constructor(
         override fun setAlpha(alpha: Int) {
         }
 
-        override fun getOpacity(): Int = PixelFormat.UNKNOWN
+        override fun getOpacity(): Int = 0
 
         override fun setColorFilter(colorFilter: ColorFilter?) {
         }
@@ -403,7 +435,7 @@ class FloatingActionButton @JvmOverloads constructor(
 
     fun getOnClickListener(): OnClickListener? = clickListener
 
-    override fun setOnClickListener(l: OnClickListener?){
+    override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
         clickListener = l
         (getTag(R.id.fab_label) as? View)?.setOnClickListener {
@@ -443,6 +475,14 @@ class FloatingActionButton @JvmOverloads constructor(
         if (icon !== drawable) {
             icon = drawable
             updateBackground()
+        }
+    }
+
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        val label = getTag(R.id.fab_label) as? Label
+        if (label != null) {
+            label.visibility = visibility
         }
     }
 }

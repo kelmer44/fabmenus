@@ -26,7 +26,7 @@ class FloatingActionButton @JvmOverloads constructor(
 ) : ImageButton(context, attrs, defStyleAttr) {
 
 
-    private val fabSize: Int
+    var fabSize: Int
 
     var showAnimation: Animation
     var hideAnimation: Animation
@@ -399,11 +399,30 @@ class FloatingActionButton @JvmOverloads constructor(
     fun getOnClickListener(): OnClickListener? = clickListener
 
     override fun setOnClickListener(l: OnClickListener?){
-
+        super.setOnClickListener(l)
         clickListener = l
         (getTag(R.id.fab_label) as? View)?.setOnClickListener {
             clickListener?.onClick(this@FloatingActionButton)
         }
     }
 
+
+    fun setButtonSize(size: Int) {
+        if (size != SIZE_NORMAL && size != SIZE_MINI) {
+            throw IllegalArgumentException("Use @FabSize constants only!")
+        }
+
+        if (fabSize != size) {
+            fabSize = size
+            updateBackground()
+        }
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        val label = getTag(R.id.fab_label) as? Label
+        if (label != null) {
+            label.isEnabled = enabled
+        }
+    }
 }

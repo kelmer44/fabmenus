@@ -2,6 +2,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/ic_edit_light" android:state_pressed="true" />
     <!-- pressed -->
-    <item android:drawable="@drawable/ic_edit" />
+    <item android:drawable="@drawable/ic_edit_vector" />
     <!-- default -->
 </selector>

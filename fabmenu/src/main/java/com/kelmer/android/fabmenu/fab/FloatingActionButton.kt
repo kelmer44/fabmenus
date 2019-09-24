@@ -9,14 +9,11 @@ import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.Shape
 import android.os.Build
 import android.util.AttributeSet
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewOutlineProvider
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.kelmer.android.fabmenu.R
 import com.kelmer.android.fabmenu.Util
 import com.kelmer.android.fabmenu.Util.dpToPx
@@ -55,23 +52,44 @@ class FloatingActionButton @JvmOverloads constructor(
     private var bgDrawable: Drawable? = null
     private var labelText: String = ""
 
+    private var buttonPositionSaved = false
+    private var originalX = -1f
+    private var originalY = -1f
+
 
     private var clickListener: View.OnClickListener? = null
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, 0, 0)
 
+        colorNormal = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorNormal,
+            getColor(R.color.fab_color_normal)
+        )
+        colorPressed = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorPressed,
+            getColor(R.color.fab_color_pressed)
+        )
+        colorDisabled = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorDisabled,
+            getColor(R.color.fab_color_disabled)
+        )
+        colorRipple = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorRipple,
+            getColor(R.color.fab_color_ripple)
+        )
+
+        showShadow = a.getBoolean(R.styleable.FloatingActionButton_fab_showShadow, true)
+        shadowColor = a.getColor(
+            R.styleable.FloatingActionButton_fab_shadowColor,
+            getColor(R.color.fab_shadow_color)
+        )
+
 
         fabSize = a.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL)
-        showShadow = a.getBoolean(R.styleable.FloatingActionButton_fab_showShadow, true)
-        shadowColor = a.getColor(R.styleable.FloatingActionButton_fab_shadowColor, getColor(R.color.fab_shadow_color))
 
-        colorNormal = a.getColor(R.styleable.FloatingActionButton_fab_colorNormal, getColor(R.color.fab_color_normal))
-        colorPressed = a.getColor(R.styleable.FloatingActionButton_fab_colorPressed, getColor(R.color.fab_color_pressed))
-        colorDisabled = a.getColor(R.styleable.FloatingActionButton_fab_colorDisabled, getColor(R.color.fab_color_disabled))
-        colorRipple = a.getColor(R.styleable.FloatingActionButton_fab_colorRipple, getColor(R.color.fab_color_ripple))
         var text = a.getString(R.styleable.FloatingActionButton_fab_label)
-        if(!text.isNullOrBlank()){
+        if (!text.isNullOrBlank()) {
             labelText = text
         }
 
@@ -89,15 +107,9 @@ class FloatingActionButton @JvmOverloads constructor(
         resources.getDimensionPixelSize(if (fabSize == SIZE_NORMAL) R.dimen.fab_size_normal else R.dimen.fab_size_mini)
 
 
-    private fun calculateMeasuredWidth(): Int {
-        val width = getCircleSize() + calculateShadowWidth()
-        return width
-    }
+    private fun calculateMeasuredWidth(): Int = getCircleSize() + calculateShadowWidth()
+    private fun calculateMeasuredHeight(): Int = getCircleSize() + calculateShadowHeight()
 
-    private fun calculateMeasuredHeight(): Int {
-        val height = getCircleSize() + calculateShadowHeight()
-        return height
-    }
 
     private fun calculateShadowWidth(): Int = if (hasShadow()) getShadowX() * 2 else 0
     private fun calculateShadowHeight(): Int = if (hasShadow()) getShadowY() * 2 else 0
@@ -112,15 +124,12 @@ class FloatingActionButton @JvmOverloads constructor(
         setMeasuredDimension(calculateMeasuredWidth(), calculateMeasuredHeight())
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-    }
-
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        saveButtonOriginalPosition()
         super.onSizeChanged(w, h, oldw, oldh)
+        updateBackground()
     }
-
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -136,10 +145,10 @@ class FloatingActionButton @JvmOverloads constructor(
         }
 
         val iconDrawable = getIconDrawable()
-        val iconSize = if (iconDrawable != null) {
-            max(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight)
-        } else {
-            -1
+        var iconSize = -1
+
+        if (iconDrawable != null) {
+            iconSize = max(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight)
         }
 
         val iconOffset = (getCircleSize() - (if (iconSize > 0) iconSize else this.iconSize)) / 2
@@ -157,16 +166,6 @@ class FloatingActionButton @JvmOverloads constructor(
         )
 
         setBackgroundCompat(layerDrawable)
-    }
-
-    @Suppress("DEPRECATION")
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private fun setBackgroundCompat(drawable: Drawable) {
-        if (Util.isJellyBean()) {
-            background = drawable
-        } else {
-            setBackgroundDrawable(drawable)
-        }
     }
 
 
@@ -214,6 +213,131 @@ class FloatingActionButton @JvmOverloads constructor(
         return shapeDrawable
     }
 
+    @Suppress("DEPRECATION")
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private fun setBackgroundCompat(drawable: Drawable) {
+        if (Util.isJellyBean()) {
+            background = drawable
+        } else {
+            setBackgroundDrawable(drawable)
+        }
+    }
+
+    private fun saveButtonOriginalPosition() {
+        if (!buttonPositionSaved) {
+            if (originalX == -1f) {
+                originalX = x
+            }
+
+            if (originalY == -1f) {
+                originalY = y
+            }
+
+            buttonPositionSaved = true
+        }
+
+    }
+
+
+    fun playShowAnimation() {
+        hideAnimation.cancel()
+        startAnimation(showAnimation)
+    }
+
+    fun playHideAnimation() {
+        showAnimation.cancel()
+        startAnimation(hideAnimation)
+    }
+
+
+    private fun getLabelView(): TextView? = getTag(R.id.fab_label) as? Label
+
+
+    internal fun setColors(colorNormal: Int, colorPressed: Int, colorRipple: Int) {
+        this.colorNormal = colorNormal
+        this.colorPressed = colorPressed
+        this.colorRipple = colorRipple
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    fun onActionDown() {
+
+        if (bgDrawable is StateListDrawable) {
+            val drawable = bgDrawable as StateListDrawable
+            drawable.state = intArrayOf(
+                android.R.attr.state_enabled,
+                android.R.attr.state_pressed
+            )
+        } else if (Util.isLollipop()) {
+
+            val ripple = bgDrawable as RippleDrawable
+            ripple.state = intArrayOf(
+                android.R.attr.state_enabled,
+                android.R.attr.state_pressed
+            )
+            ripple.setHotspot(calculateCenterX(), calculateCenterY())
+            ripple.setVisible(true, true)
+        }
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    fun onActionUp() {
+        if (bgDrawable is StateListDrawable) {
+            val drawable = bgDrawable as StateListDrawable
+            drawable.state = intArrayOf(
+                android.R.attr.state_enabled
+            )
+        } else if (Util.isLollipop()) {
+            val ripple = bgDrawable as RippleDrawable
+            ripple.state = intArrayOf(android.R.attr.state_enabled)
+            ripple.setHotspot(calculateCenterX(), calculateCenterY())
+            ripple.setVisible(true, true)
+        }
+    }
+
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isEnabled) {
+            val label = getTag(R.id.fab_label) as? Label ?: return super.onTouchEvent(event)
+
+            val action = event.action
+            when (action) {
+                MotionEvent.ACTION_UP -> {
+                    label?.onActionUp()
+                    onActionUp()
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    label?.onActionUp()
+                    onActionUp()
+                }
+            }
+            gestureDetector.onTouchEvent(event)
+
+        }
+        return super.onTouchEvent(event)
+    }
+
+
+    private val gestureDetector = object : GestureDetector(context, object : SimpleOnGestureListener() {
+
+        override fun onDown(e: MotionEvent?): Boolean {
+            val label = getTag(R.id.fab_label) as? Label
+            label?.onActionDown()
+            onActionDown()
+            return super.onDown(e)
+        }
+
+        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            val label = getTag(R.id.fab_label) as? Label
+            label?.onActionUp()
+            onActionUp()
+            return super.onSingleTapUp(e)
+        }
+
+
+    }){}
+
 
     fun hasShadow() = !usingElevation && showShadow
 
@@ -231,10 +355,8 @@ class FloatingActionButton @JvmOverloads constructor(
         getLabelView()?.text = text
     }
 
-    private fun getLabelView(): TextView? = getTag(R.id.fab_label) as? Label
 
-
-    private inner class CircleDrawable(s: Shape) : ShapeDrawable(s) {
+    inner class CircleDrawable(s: Shape) : ShapeDrawable(s) {
 
         private var circleInsetHorizontal: Int = 0
         private var circleInsetVertical: Int = 0
@@ -293,12 +415,6 @@ class FloatingActionButton @JvmOverloads constructor(
         }
     }
 
-    internal fun setColors(colorNormal: Int, colorPressed: Int, colorRipple: Int) {
-        this.colorNormal = colorNormal
-        this.colorPressed = colorPressed
-        this.colorRipple = colorRipple
-    }
-
     /**
      * Makes FAB disappear setting its visibility to INVISIBLE
      */
@@ -311,9 +427,9 @@ class FloatingActionButton @JvmOverloads constructor(
         }
     }
 
-    fun show(animate: Boolean){
-        if(isHidden()){
-            if(animate){
+    fun show(animate: Boolean) {
+        if (isHidden()) {
+            if (animate) {
                 playShowAnimation()
             }
             super.setVisibility(View.VISIBLE)
@@ -323,28 +439,11 @@ class FloatingActionButton @JvmOverloads constructor(
     fun isHidden() = visibility == View.INVISIBLE
 
 
-    fun playShowAnimation(){
-        hideAnimation.cancel()
-        startAnimation(showAnimation)
-    }
-
-    fun playHideAnimation(){
-        showAnimation.cancel()
-        startAnimation(hideAnimation)
-    }
-
     fun getLabelText(): String {
         return labelText
     }
 
     fun getOnClickListener(): OnClickListener? = clickListener
-    fun onActionUp() {
 
 
-    }
-
-    fun onActionDown() {
-
-
-    }
 }

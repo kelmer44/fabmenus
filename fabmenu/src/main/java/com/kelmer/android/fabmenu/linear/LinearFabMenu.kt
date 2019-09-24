@@ -160,7 +160,9 @@ class LinearFabMenu @JvmOverloads constructor(
 
 
         icon = a.getDrawable(R.styleable.LinearFabMenu_menu_icon)
-
+        if(icon == null){
+            icon = resources.getDrawable(R.drawable.ic_add)
+        }
 
 
         labelsColorNormal =

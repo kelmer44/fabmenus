@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.*
 import android.widget.ImageView
+import androidx.core.view.children
 import androidx.core.widget.TextViewCompat
 import com.kelmer.android.fabmenu.MenuInterface
 import com.kelmer.android.fabmenu.R
@@ -25,7 +26,9 @@ import com.kelmer.android.fabmenu.Util.getColor
 import com.kelmer.android.fabmenu.fab.FloatingActionButton
 import com.kelmer.android.fabmenu.fab.Label
 import kotlin.math.abs
+import kotlin.math.cos
 import kotlin.math.max
+import kotlin.math.sin
 
 class LinearFabMenu @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -122,43 +125,76 @@ class LinearFabMenu @JvmOverloads constructor(
     init {
 
 
-
         val a = context.obtainStyledAttributes(attrs, R.styleable.LinearFabMenu, 0, 0)
 
 
-        labelsPosition = a.getInt(R.styleable.LinearFabMenu_menu_labels_position, LABEL_POSITION_LEFT)
-        val labelShowAnim = if (labelsPosition == LABEL_POSITION_LEFT) R.anim.fab_slide_in_from_right else R.anim.fab_slide_in_from_left
-        val labelHideAnim = if (labelsPosition == LABEL_POSITION_LEFT) R.anim.fab_slide_out_to_right else R.anim.fab_slide_out_to_left
+        labelsPosition =
+            a.getInt(R.styleable.LinearFabMenu_menu_labels_position, LABEL_POSITION_LEFT)
+        val labelShowAnim =
+            if (labelsPosition == LABEL_POSITION_LEFT) R.anim.fab_slide_in_from_right else R.anim.fab_slide_in_from_left
+        val labelHideAnim =
+            if (labelsPosition == LABEL_POSITION_LEFT) R.anim.fab_slide_out_to_right else R.anim.fab_slide_out_to_left
 
-        labelsShowAnimation = a.getResourceId( R.styleable.LinearFabMenu_menu_labels_showAnimation, labelShowAnim)
-        labelsHideAnimation = a.getResourceId(R.styleable.LinearFabMenu_menu_labels_hideAnimation, labelHideAnim)
-        labelsTextColor = a.getColorStateList(R.styleable.LinearFabMenu_menu_labels_textColor) ?: ColorStateList.valueOf( Color.WHITE )
-        labelsTextSize = a.getDimension( R.styleable.LinearFabMenu_menu_labels_textSize, resources.getDimension(R.dimen.labels_text_size))
+        labelsShowAnimation =
+            a.getResourceId(R.styleable.LinearFabMenu_menu_labels_showAnimation, labelShowAnim)
+        labelsHideAnimation =
+            a.getResourceId(R.styleable.LinearFabMenu_menu_labels_hideAnimation, labelHideAnim)
+        labelsTextColor = a.getColorStateList(R.styleable.LinearFabMenu_menu_labels_textColor)
+            ?: ColorStateList.valueOf(Color.WHITE)
+        labelsTextSize = a.getDimension(
+            R.styleable.LinearFabMenu_menu_labels_textSize,
+            resources.getDimension(R.dimen.labels_text_size)
+        )
 
-        labelsColorNormal = a.getColor(R.styleable.LinearFabMenu_menu_labels_colorNormal, getColor(R.color.fab_label_normal))
-        labelsColorPressed = a.getColor(R.styleable.LinearFabMenu_menu_labels_colorPressed, getColor(R.color.fab_label_pressed))
-        labelsColorRipple = a.getColor(R.styleable.LinearFabMenu_menu_labels_colorRipple, getColor(R.color.fab_label_ripple))
+        labelsColorNormal = a.getColor(
+            R.styleable.LinearFabMenu_menu_labels_colorNormal,
+            getColor(R.color.fab_label_normal)
+        )
+        labelsColorPressed = a.getColor(
+            R.styleable.LinearFabMenu_menu_labels_colorPressed,
+            getColor(R.color.fab_label_pressed)
+        )
+        labelsColorRipple = a.getColor(
+            R.styleable.LinearFabMenu_menu_labels_colorRipple,
+            getColor(R.color.fab_label_ripple)
+        )
 
 
 
 
         menuShowShadow = a.getBoolean(R.styleable.LinearFabMenu_menu_showShadow, true)
-        menuShadowColor = a.getColor(R.styleable.LinearFabMenu_menu_shadowColor, getColor(R.color.fab_shadow_color))
+        menuShadowColor = a.getColor(
+            R.styleable.LinearFabMenu_menu_shadowColor,
+            getColor(R.color.fab_shadow_color)
+        )
 
-        menuShadowRadius = a.getDimension(R.styleable.LinearFabMenu_menu_shadowRadius, menuShadowRadius)
-        menuShadowXOffset = a.getDimension(R.styleable.LinearFabMenu_menu_shadowXOffset, menuShadowXOffset)
-        menuShadowYOffset = a.getDimension(R.styleable.LinearFabMenu_menu_shadowYOffset, menuShadowYOffset)
+        menuShadowRadius =
+            a.getDimension(R.styleable.LinearFabMenu_menu_shadowRadius, menuShadowRadius)
+        menuShadowXOffset =
+            a.getDimension(R.styleable.LinearFabMenu_menu_shadowXOffset, menuShadowXOffset)
+        menuShadowYOffset =
+            a.getDimension(R.styleable.LinearFabMenu_menu_shadowYOffset, menuShadowYOffset)
 
-        menuColorNormal = a.getColor(R.styleable.LinearFabMenu_menu_colorNormal, getColor(R.color.fab_color_normal))
-        menuColorPressed = a.getColor(R.styleable.LinearFabMenu_menu_colorPressed, getColor(R.color.fab_color_pressed))
-        menuColorRipple = a.getColor(R.styleable.LinearFabMenu_menu_colorRipple, getColor(R.color.fab_color_ripple))
+        menuColorNormal = a.getColor(
+            R.styleable.LinearFabMenu_menu_colorNormal,
+            getColor(R.color.fab_color_normal)
+        )
+        menuColorPressed = a.getColor(
+            R.styleable.LinearFabMenu_menu_colorPressed,
+            getColor(R.color.fab_color_pressed)
+        )
+        menuColorRipple = a.getColor(
+            R.styleable.LinearFabMenu_menu_colorRipple,
+            getColor(R.color.fab_color_ripple)
+        )
 
         icon = a.getDrawable(R.styleable.LinearFabMenu_menu_icon)
-        if(icon == null){
+        if (icon == null) {
             icon = resources.getDrawable(R.drawable.ic_add)
         }
 
-        menuFabSize = a.getInt(R.styleable.LinearFabMenu_menu_fab_size, FloatingActionButton.SIZE_NORMAL)
+        menuFabSize =
+            a.getInt(R.styleable.LinearFabMenu_menu_fab_size, FloatingActionButton.SIZE_NORMAL)
         labelsStyle = a.getResourceId(R.styleable.LinearFabMenu_menu_labels_style, 0)
 
         openDirection = a.getInt(R.styleable.LinearFabMenu_menu_openDirection, OPEN_UP)
@@ -313,8 +349,10 @@ class LinearFabMenu @JvmOverloads constructor(
 
             val label = child.getTag(R.id.fab_label) as? Label
             if (label != null) {
-                val labelOffset = (maxButtonWidth - child.measuredWidth) / (if (usingMenuLabel) 1 else 2)
-                val labelUsedWidth = child.measuredWidth + label.calculateShadowWidth() + labelsMargin + labelOffset
+                val labelOffset =
+                    (maxButtonWidth - child.measuredWidth) / (if (usingMenuLabel) 1 else 2)
+                val labelUsedWidth =
+                    child.measuredWidth + label.calculateShadowWidth() + labelsMargin + labelOffset
                 measureChildWithMargins(
                     label,
                     widthMeasureSpec,
@@ -347,16 +385,18 @@ class LinearFabMenu @JvmOverloads constructor(
         val openUp = openDirection == OPEN_UP
 
 
-        val buttonsHorizontalCenter = if (areLabelsToTheLeft) right - left - maxButtonWidth / 2 - paddingRight else maxButtonWidth / 2 + paddingLeft
+        val buttonsHorizontalCenter =
+            if (areLabelsToTheLeft) right - left - maxButtonWidth / 2 - paddingRight else maxButtonWidth / 2 + paddingLeft
 
 
-        Log.d("LAYOUT", "buttonsHorizontalCenter = $buttonsHorizontalCenter")
+        Log.d("LAYOUTRADIAL", "buttonsHorizontalCenter = $buttonsHorizontalCenter")
 
 
-        val menuButtonTop = if (openUp) bottom - top - menuButton.measuredHeight - paddingBottom else paddingTop
+        val menuButtonTop =
+            if (openUp) bottom - top - menuButton.measuredHeight - paddingBottom else paddingTop
         val menuButtonLeft = buttonsHorizontalCenter - menuButton.measuredWidth / 2
 
-        Log.d("LAYOUT", "menuButtonTop= $menuButtonTop, menuButtonLeft=$menuButtonLeft")
+        Log.d("LAYOUTRADIAL", "menuButtonLeft=$menuButtonLeft, menuButtonTop= $menuButtonTop")
 
 
         menuButton.layout(
@@ -367,9 +407,10 @@ class LinearFabMenu @JvmOverloads constructor(
         )
 
         val imageLeft = buttonsHorizontalCenter - imageToggle.measuredWidth / 2
-        val imageTop = menuButtonTop + menuButton.measuredHeight / 2 - imageToggle.measuredHeight / 2
+        val imageTop =
+            menuButtonTop + menuButton.measuredHeight / 2 - imageToggle.measuredHeight / 2
 
-        Log.v("LAYOUT", "imageLeft= $imageLeft, imageTop=$imageTop")
+        Log.v("LAYOUTRADIAL", "imageLeft= $imageLeft, imageTop=$imageTop")
 
         imageToggle.layout(
             imageLeft,
@@ -379,10 +420,14 @@ class LinearFabMenu @JvmOverloads constructor(
         )
 
 
+        var nextY =
+            if (openUp) menuButtonTop + menuButton.measuredHeight + buttonSpacing else menuButtonTop
 
+        val circleRadius = menuButton.measuredWidth + buttonSpacing
+        val verticalCenter = menuButtonTop + menuButton.measuredHeight / 2
 
-
-        var nextY = if (openUp) menuButtonTop + menuButton.measuredHeight + buttonSpacing else menuButtonTop
+        //Count items that are FABs and substract 1 (because of the main menu)
+        val submenuItems = children.filter { it is FloatingActionButton }.count() - 1
 
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
@@ -392,8 +437,21 @@ class LinearFabMenu @JvmOverloads constructor(
             val fab = child as FloatingActionButton
             if (fab.visibility == View.GONE) continue
 
-            val childX = buttonsHorizontalCenter - fab.measuredWidth / 2
-            val childY = if (openUp) nextY - fab.measuredHeight - buttonSpacing else nextY
+
+            var childX = 0
+            var childY = 0
+            if (openType == TYPE_LINEAR) {
+                childX = buttonsHorizontalCenter - fab.measuredWidth / 2
+                childY = if (openUp) nextY - fab.measuredHeight - buttonSpacing else nextY
+            } else {
+                val angle = (Math.PI / submenuItems) * (i)
+                childX = if(areLabelsToTheLeft)
+                    (buttonsHorizontalCenter) - (circleRadius * cos(angle)).toInt() - fab.measuredWidth / 2
+                else
+                     (circleRadius * cos(angle)).toInt() + fab.measuredWidth / 2
+                childY =
+                    (verticalCenter) - (circleRadius * sin(angle)).toInt() - fab.measuredHeight / 2
+            }
 
             if (fab != menuButton) {
                 fab.layout(
@@ -406,29 +464,48 @@ class LinearFabMenu @JvmOverloads constructor(
                 }
             }
 
-//            val label = fab.getTag(R.id.fab_label) as? Label
-//            if (label != null) {
-//                val labelsOffset =(if (usingMenuLabel) maxButtonWidth / 2 else fab.measuredWidth / 2) + labelsMargin
-//                val labelXNearButton = if (areLabelsToTheLeft) buttonsHorizontalCenter - labelsOffset else buttonsHorizontalCenter + labelsOffset
-//                val labelXAwayFromButton = if (areLabelsToTheLeft) labelXNearButton - label.measuredWidth else labelXNearButton + label.measuredWidth
-//
-//                val labelLeft = if (areLabelsToTheLeft) labelXAwayFromButton else labelXNearButton
-//                val labelRight = if (areLabelsToTheLeft) labelXNearButton else labelXAwayFromButton
-//
-//                val labelTop = childY - labelsVerticalOffset + (fab.measuredHeight - label.measuredHeight) / 2
-//
-//                label.layout(labelLeft, labelTop, labelRight, labelTop + label.measuredHeight)
-//
-//                if (!isMenuOpening) {
-//                    label.visibility = View.INVISIBLE
-//                }
-//            }
+            /**
+             * Lays out the labels.
+             */
+
+
+            val label = fab.getTag(R.id.fab_label) as? Label
+            if (label != null) {
+                val labelsOffset =
+                    (if (usingMenuLabel) maxButtonWidth / 2 else fab.measuredWidth / 2) + labelsMargin
+                val labelXNearButton =
+                    if (areLabelsToTheLeft) buttonsHorizontalCenter - labelsOffset else buttonsHorizontalCenter + labelsOffset
+                val labelXAwayFromButton =
+                    if (areLabelsToTheLeft) labelXNearButton - label.measuredWidth else labelXNearButton + label.measuredWidth
+
+                var labelLeft = 0
+                var labelRight = 0
+
+                if (openType == TYPE_LINEAR) {
+                    labelLeft = if (areLabelsToTheLeft) labelXAwayFromButton else labelXNearButton
+                    labelRight = if (areLabelsToTheLeft) labelXNearButton else labelXAwayFromButton
+                } else {
+                    labelLeft =
+                        if (areLabelsToTheLeft) childX - label.measuredWidth - labelsMargin else childX + fab.measuredWidth + labelsMargin
+                    labelRight = labelLeft + label.measuredWidth
+                }
+
+                val labelTop =
+                    childY - labelsVerticalOffset + (fab.measuredHeight - label.measuredHeight) / 2
+
+                label.layout(labelLeft, labelTop, labelRight, labelTop + label.measuredHeight)
+
+                if (!isMenuOpening) {
+                    label.visibility = View.INVISIBLE
+                }
+            }
 
             nextY =
                 if (openUp) childY - buttonSpacing else childY + child.measuredHeight + buttonSpacing
         }
 
     }
+
     private fun adjustForOvershoot(dimension: Int): Int = (dimension * 0.03 + dimension).toInt()
 
     override fun onFinishInflate() {
@@ -663,7 +740,6 @@ class LinearFabMenu @JvmOverloads constructor(
     fun setClosedOnTouchOutside(close: Boolean) {
         closeOnTouchOutside = close
     }
-
 
 
     companion object {

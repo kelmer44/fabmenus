@@ -56,18 +56,66 @@
         android:elevation="4dp"
         android:src="@drawable/ic_camera_light"
         />
+    <com.kelmer.android.fabmenu.linear.LinearFabMenu
+        android:id="@+id/menu_green"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:elevation="4dp"
+        app:menu_colorNormal="@android:color/holo_orange_light"
+        app:menu_type="linear"
+        app:menu_showShadow="false"
+        app:menu_labels_position="left"
+        app:menu_backgroundColor="#ddffffff"
+        app:menu_fab_label="Menu label">
+
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/fab_green1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera_light"
+            app:fab_colorNormal="@android:color/holo_purple"
+            app:fab_size="mini"
+            android:elevation="4dp"
+            app:fab_showShadow="false"
+            app:fab_label="Purple" />
+
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/fab_green2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            app:fab_colorNormal="@android:color/holo_green_dark"
+            app:fab_size="mini"
+            android:elevation="4dp"
+            app:fab_showShadow="false"
+            app:fab_label="Green" />
+
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/fab_green3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_star"
+            app:fab_colorNormal="@android:color/holo_blue_dark"
+            app:fab_size="mini"
+            android:elevation="4dp"
+            app:fab_showShadow="false"
+            app:fab_label="Blue" />
+
+
+    </com.kelmer.android.fabmenu.linear.LinearFabMenu>
 
     <com.kelmer.android.fabmenu.linear.LinearFabMenu
         android:id="@+id/menu_red"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
         android:padding="10dp"
         android:elevation="4dp"
         app:menu_type="radial"
+        app:menu_backgroundColor="#ddffffff"
+        app:menu_labels_position="right"
         app:menu_showShadow="false"
-        app:menu_fab_label="Menu label">
+        >
 
         <com.kelmer.android.fabmenu.fab.FloatingActionButton
             android:id="@+id/fab1"
@@ -78,7 +126,7 @@
             app:fab_size="mini"
             android:elevation="4dp"
             app:fab_showShadow="false"
-            app:fab_label="Pollas" />
+            app:fab_label="Purple" />
 
         <com.kelmer.android.fabmenu.fab.FloatingActionButton
             android:id="@+id/fab2"
@@ -89,7 +137,7 @@
             app:fab_size="mini"
             android:elevation="4dp"
             app:fab_showShadow="false"
-            app:fab_label="En Vinegar" />
+            app:fab_label="Green" />
 
         <com.kelmer.android.fabmenu.fab.FloatingActionButton
             android:id="@+id/fab3"
@@ -100,7 +148,7 @@
             app:fab_size="mini"
             android:elevation="4dp"
             app:fab_showShadow="false"
-            app:fab_label="Y salmuera" />
+            app:fab_label="Blue" />
 
 
     </com.kelmer.android.fabmenu.linear.LinearFabMenu>

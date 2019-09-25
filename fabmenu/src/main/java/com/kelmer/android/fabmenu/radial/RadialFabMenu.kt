@@ -35,7 +35,7 @@ class RadialFabMenu @JvmOverloads constructor(
     private val fabButtonRadius: Int
     private val menuButtonRadius: Int
     private val gap: Int
-    private val numberOfItems: Int = 3
+    private val numberOfItems: Int = 2
 
     private var centerX: Int = 0
     private var centerY: Int = 0

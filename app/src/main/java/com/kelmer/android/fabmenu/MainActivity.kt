@@ -16,16 +16,16 @@ class MainActivity : AppCompatActivity() {
         menu_red.setClosedOnTouchOutside(true)
         val listener = object : MenuInterface {
             override fun menuOpen() {
-                Toast.makeText(applicationContext, "Menu opened!", Toast.LENGTH_LONG).show()
+//                Toast.makeText(applicationContext, "Menu opened!", Toast.LENGTH_LONG).show()
             }
 
             override fun menuClose() {
-                Toast.makeText(applicationContext, "Menu closed!", Toast.LENGTH_LONG).show()
+//                Toast.makeText(applicationContext, "Menu closed!", Toast.LENGTH_LONG).show()
             }
 
             override fun menuItemClicked(menuItem: Int) {
-                Toast.makeText(applicationContext, "Menu item clicked $menuItem", Toast.LENGTH_LONG)
-                    .show()
+//                Toast.makeText(applicationContext, "Menu item clicked $menuItem", Toast.LENGTH_LONG)
+//                    .show()
             }
 
         }

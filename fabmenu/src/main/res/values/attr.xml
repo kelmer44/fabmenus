@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="RadialFabMenu">
-
-<!--        <attr name="no_of_menu" format="integer" />-->
-        <attr name="fab_radius" format="dimension" />
-        <attr name="menu_radius" format="dimension" />
-<!--        <attr name="gap_between_menu_fab" format="dimension" />-->
-        <attr name="menu_drawable" format="reference" />
-    </declare-styleable>
 
 
     <declare-styleable name="FloatingActionButton">
@@ -38,6 +30,7 @@
 
     <declare-styleable name="LinearFabMenu">
         <attr name="menu_showShadow" format="boolean" />
+        <attr name="menu_radial_angleOffset" format="float" />
 <!--        <attr name="menu_buttonSpacing" format="dimension" />-->
 <!--        <attr name="menu_labels_margin" format="dimension" />-->
         <attr name="menu_labels_showAnimation" format="reference" />
@@ -75,7 +68,6 @@
             <enum name="mini" value="1" />
         </attr>
         <attr name="menu_labels_style" format="reference" />
-<!--        <attr name="menu_labels_customFont" format="string" />-->
         <attr name="menu_shadowColor" format="color" />
         <attr name="menu_shadowRadius" format="dimension" />
         <attr name="menu_shadowXOffset" format="dimension" />

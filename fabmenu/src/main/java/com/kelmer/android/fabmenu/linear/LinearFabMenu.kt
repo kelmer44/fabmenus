@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.util.AttributeSet
@@ -119,8 +120,11 @@ class LinearFabMenu @JvmOverloads constructor(
 
 
     var toggleListener: MenuInterface? = null
-
     private var maxButtonWidth: Int = 0
+
+
+
+    var angleOffset : Float = 0f
 
     init {
 
@@ -201,6 +205,9 @@ class LinearFabMenu @JvmOverloads constructor(
         openType = a.getInt(R.styleable.LinearFabMenu_menu_type, TYPE_LINEAR)
         bgColor = a.getColor(R.styleable.LinearFabMenu_menu_backgroundColor, Color.TRANSPARENT)
 
+
+
+        angleOffset = (a.getFloat(R.styleable.LinearFabMenu_menu_radial_angleOffset, 0f) * Math.PI /180f).toFloat()
 
         if (a.hasValue(R.styleable.LinearFabMenu_menu_fab_label)) {
             val label = a.getString(R.styleable.LinearFabMenu_menu_fab_label)
@@ -448,6 +455,31 @@ class LinearFabMenu @JvmOverloads constructor(
         }
     }
 
+
+    fun getChildPosForLinear(fab: FloatingActionButton, horizontalCenter: Int, verticalCenter: Int, nextY: Int): Point {
+        val childX = horizontalCenter - fab.measuredWidth / 2
+        val childY = if (isOpenUp()) nextY - fab.measuredHeight - buttonSpacing else nextY
+
+        return Point(childX, childY)
+    }
+
+    fun getChildPosForRadial(fab: FloatingActionButton, horizontalCenter: Int, verticalCenter: Int, itemPos: Int): Point {
+
+        //Count items that are FABs and substract 1 (because of the main menu)
+        val submenuItems = children.filter { it is FloatingActionButton }.count() - 1
+        val circleRadius = menuButton.measuredWidth + buttonSpacing
+        val angle = ((Math.PI / submenuItems) * (itemPos)) + angleOffset
+        val unoffsettedAngle = ((Math.PI / submenuItems) * (itemPos))
+        Log.w("RADIALANGLEOFFSET ", "Resulting angle is $angle ( original is $unoffsettedAngle)")
+        val childX =
+            (horizontalCenter) - (circleRadius * cos(angle)).toInt() - fab.measuredWidth / 2
+
+        val childY =
+            (verticalCenter) - (circleRadius * sin(angle)).toInt() - fab.measuredHeight / 2
+        Log.d("RADIALANGLEOFFSET", "ButtonsHC=$horizontalCenter, circleRadius=$circleRadius, cos(angle)=${cos(angle)}, posX=$childX, posY=$childY")
+        return Point(childX, childY)
+    }
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         val areLabelsToTheLeft = labelsPosition == LABEL_POSITION_LEFT
         val openUp = openDirection == OPEN_UP
@@ -484,9 +516,8 @@ class LinearFabMenu @JvmOverloads constructor(
         val circleRadius = menuButton.measuredWidth + buttonSpacing
         val verticalCenter = menuButtonTop + menuButton.measuredHeight / 2
 
-        //Count items that are FABs and substract 1 (because of the main menu)
-        val submenuItems = children.filter { it is FloatingActionButton }.count() - 1
 
+        Log.w("RADIALANGLEOFFSET ", "Offset is $angleOffset")
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
 
@@ -495,20 +526,16 @@ class LinearFabMenu @JvmOverloads constructor(
             val fab = child as FloatingActionButton
             if (fab.visibility == View.GONE) continue
 
-
             var childX = 0
             var childY = 0
             if (openType == TYPE_LINEAR) {
-                childX = buttonsHorizontalCenter - fab.measuredWidth / 2
-                childY = if (openUp) nextY - fab.measuredHeight - buttonSpacing else nextY
+                val pos = getChildPosForLinear(fab, buttonsHorizontalCenter, verticalCenter, nextY)
+                childX = pos.x
+                childY = pos.y
             } else {
-                val angle = (Math.PI / submenuItems) * (i)
-                childX = if (areLabelsToTheLeft)
-                    (buttonsHorizontalCenter) - (circleRadius * cos(angle)).toInt() - fab.measuredWidth / 2
-                else
-                    (circleRadius * cos(angle)).toInt() + fab.measuredWidth / 2
-                childY =
-                    (verticalCenter) - (circleRadius * sin(angle)).toInt() - fab.measuredHeight / 2
+                val pos = getChildPosForRadial(fab, buttonsHorizontalCenter, verticalCenter, i)
+                childX = pos.x
+                childY = pos.y
             }
 
             if (fab != menuButton) {

@@ -7,56 +7,56 @@
     tools:context=".MainActivity">
 
 
-    <com.kelmer.android.fabmenu.linear.LinearFabMenu
-        android:id="@+id/gooey_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        app:layout_constraintBottom_toTopOf="@id/big"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:menu_colorNormal="@android:color/holo_blue_dark"
-        app:menu_colorPressed="@android:color/holo_orange_dark"
-        app:menu_colorRipple="@android:color/holo_red_light"
-        app:menu_showShadow="false"
-        app:menu_type="radial">
+<!--    <com.kelmer.android.fabmenu.linear.LinearFabMenu-->
+<!--        android:id="@+id/gooey_menu"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@color/colorAccent"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/big"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:menu_colorNormal="@android:color/holo_blue_dark"-->
+<!--        app:menu_colorPressed="@android:color/holo_orange_dark"-->
+<!--        app:menu_colorRipple="@android:color/holo_red_light"-->
+<!--        app:menu_showShadow="false"-->
+<!--        app:menu_type="radial">-->
 
 
-        <com.kelmer.android.fabmenu.fab.FloatingActionButton
-            android:id="@+id/fab_gooey1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:src="@drawable/ic_camera_light"
-            app:fab_colorNormal="@android:color/holo_purple"
-            app:fab_label="Purple"
-            app:fab_showShadow="false"
-            app:fab_size="mini" />
+<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
+<!--            android:id="@+id/fab_gooey1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:elevation="4dp"-->
+<!--            android:src="@drawable/ic_camera_light"-->
+<!--            app:fab_colorNormal="@android:color/holo_purple"-->
+<!--            app:fab_label="Purple"-->
+<!--            app:fab_showShadow="false"-->
+<!--            app:fab_size="mini" />-->
 
-        <com.kelmer.android.fabmenu.fab.FloatingActionButton
-            android:id="@+id/fab_gooey2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:src="@drawable/ic_close"
-            app:fab_colorNormal="@android:color/holo_green_dark"
-            app:fab_label="Green"
-            app:fab_showShadow="false"
-            app:fab_size="mini" />
+<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
+<!--            android:id="@+id/fab_gooey2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:elevation="4dp"-->
+<!--            android:src="@drawable/ic_close"-->
+<!--            app:fab_colorNormal="@android:color/holo_green_dark"-->
+<!--            app:fab_label="Green"-->
+<!--            app:fab_showShadow="false"-->
+<!--            app:fab_size="mini" />-->
 
-        <com.kelmer.android.fabmenu.fab.FloatingActionButton
-            android:id="@+id/fab_gooey3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:src="@drawable/ic_star"
-            app:fab_colorNormal="@android:color/holo_blue_dark"
-            app:fab_label="Blue"
-            app:fab_showShadow="false"
-            app:fab_size="mini" />
+<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
+<!--            android:id="@+id/fab_gooey3"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:elevation="4dp"-->
+<!--            android:src="@drawable/ic_star"-->
+<!--            app:fab_colorNormal="@android:color/holo_blue_dark"-->
+<!--            app:fab_label="Blue"-->
+<!--            app:fab_showShadow="false"-->
+<!--            app:fab_size="mini" />-->
 
-    </com.kelmer.android.fabmenu.linear.LinearFabMenu>
+<!--    </com.kelmer.android.fabmenu.linear.LinearFabMenu>-->
 
 
     <com.kelmer.android.fabmenu.fab.FloatingActionButton
@@ -93,54 +93,55 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/big" />
 
-    <com.kelmer.android.fabmenu.linear.LinearFabMenu
-        android:id="@+id/menu_green"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="4dp"
-        android:padding="10dp"
-        app:menu_backgroundColor="#ddffffff"
-        app:menu_colorNormal="@android:color/holo_orange_light"
-        app:menu_fab_label="Menu label"
-        app:menu_labels_position="left"
-        app:menu_showShadow="false"
-        app:menu_type="linear">
+<!--    <com.kelmer.android.fabmenu.linear.LinearFabMenu-->
+<!--        android:id="@+id/menu_green"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:elevation="4dp"-->
+<!--        android:padding="10dp"-->
+<!--        app:menu_radial_angleOffset="90"-->
+<!--        app:menu_backgroundColor="#ddffffff"-->
+<!--        app:menu_colorNormal="@android:color/holo_orange_light"-->
+<!--        app:menu_fab_label="Menu label"-->
+<!--        app:menu_labels_position="left"-->
+<!--        app:menu_showShadow="false"-->
+<!--        app:menu_type="linear">-->
 
-        <com.kelmer.android.fabmenu.fab.FloatingActionButton
-            android:id="@+id/fab_green1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:src="@drawable/ic_camera_light"
-            app:fab_colorNormal="@android:color/holo_purple"
-            app:fab_label="Purple"
-            app:fab_showShadow="false"
-            app:fab_size="mini" />
+<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
+<!--            android:id="@+id/fab_green1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:elevation="4dp"-->
+<!--            android:src="@drawable/ic_camera_light"-->
+<!--            app:fab_colorNormal="@android:color/holo_purple"-->
+<!--            app:fab_label="Purple"-->
+<!--            app:fab_showShadow="false"-->
+<!--            app:fab_size="mini" />-->
 
-        <com.kelmer.android.fabmenu.fab.FloatingActionButton
-            android:id="@+id/fab_green2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:src="@drawable/ic_close"
-            app:fab_colorNormal="@android:color/holo_green_dark"
-            app:fab_label="Green"
-            app:fab_showShadow="false"
-            app:fab_size="mini" />
+<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
+<!--            android:id="@+id/fab_green2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:elevation="4dp"-->
+<!--            android:src="@drawable/ic_close"-->
+<!--            app:fab_colorNormal="@android:color/holo_green_dark"-->
+<!--            app:fab_label="Green"-->
+<!--            app:fab_showShadow="false"-->
+<!--            app:fab_size="mini" />-->
 
-        <com.kelmer.android.fabmenu.fab.FloatingActionButton
-            android:id="@+id/fab_green3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:src="@drawable/ic_star"
-            app:fab_colorNormal="@android:color/holo_blue_dark"
-            app:fab_label="Blue"
-            app:fab_showShadow="false"
-            app:fab_size="mini" />
+<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
+<!--            android:id="@+id/fab_green3"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:elevation="4dp"-->
+<!--            android:src="@drawable/ic_star"-->
+<!--            app:fab_colorNormal="@android:color/holo_blue_dark"-->
+<!--            app:fab_label="Blue"-->
+<!--            app:fab_showShadow="false"-->
+<!--            app:fab_size="mini" />-->
 
 
-    </com.kelmer.android.fabmenu.linear.LinearFabMenu>
+<!--    </com.kelmer.android.fabmenu.linear.LinearFabMenu>-->
 
     <com.kelmer.android.fabmenu.linear.LinearFabMenu
         android:id="@+id/menu_red"
@@ -148,6 +149,7 @@
         android:layout_height="match_parent"
         android:elevation="4dp"
         android:padding="10dp"
+        app:menu_radial_angleOffset="-15"
         app:menu_backgroundColor="#ddffffff"
         app:menu_labels_position="right"
         app:menu_showShadow="false"

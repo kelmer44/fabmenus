@@ -13,6 +13,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         fab1.setButtonSize(FloatingActionButton.SIZE_MINI)
+        fab1.setChecked(true)
         menu_red.setClosedOnTouchOutside(true)
         val listener = object : MenuInterface {
             override fun menuOpen() {

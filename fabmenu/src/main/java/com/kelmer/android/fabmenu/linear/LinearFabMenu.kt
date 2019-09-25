@@ -319,25 +319,65 @@ class LinearFabMenu @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 
-        var width: Int
+        var width: Int = 0
         var height = 0
         maxButtonWidth = 0
 
         var maxLabelWidth = 0
-
         measureChildWithMargins(imageToggle, widthMeasureSpec, 0, heightMeasureSpec, 0)
-
         /**
          * we do one pass to calculate the max width of those buttons so that all adjust to it
          */
         for (i in 0 until buttonCount) {
             val child = getChildAt(i)
             if (child.visibility == View.GONE || child == imageToggle) continue
-
             measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0)
             maxButtonWidth = max(maxButtonWidth, child.measuredWidth)
         }
 
+
+        val dimen =
+            if (openType == TYPE_LINEAR) calculateForLinear(widthMeasureSpec, heightMeasureSpec)
+            else calculateForRadial(widthMeasureSpec, heightMeasureSpec)
+
+        width = dimen.width
+        height = dimen.height
+
+        if (layoutParams.width == LayoutParams.MATCH_PARENT) {
+            width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
+        }
+        if (layoutParams.height == LayoutParams.MATCH_PARENT) {
+            height = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
+        }
+
+
+
+        setMeasuredDimension(width, height)
+    }
+
+    data class Dimen(val width: Int, val height: Int)
+
+    private fun calculateForRadial(widthMeasureSpec: Int, heightMeasureSpec: Int): Dimen {
+        var width = 0
+        var height = 0
+        for (i in 0 until buttonCount) {
+            val child = getChildAt(i)
+            if (child.visibility == View.GONE || child == imageToggle) continue
+            width = max(menuButton.measuredWidth + buttonSpacing + child.measuredWidth / 2, width)
+            height =
+                max(menuButton.measuredHeight + buttonSpacing + child.measuredHeight, height)
+        }
+
+        width *= 2
+        height = height
+        return Dimen(width, height)
+    }
+
+
+    private fun calculateForLinear(widthMeasureSpec: Int, heightMeasureSpec: Int): Dimen {
+        var width: Int = 0
+        var height: Int = 0
+        var maxLabelWidth = 0
         for (i in 0 until buttonCount) {
             var usedWidth = 0
             val child = getChildAt(i)
@@ -365,6 +405,7 @@ class LinearFabMenu @JvmOverloads constructor(
             }
         }
 
+
         width = max(maxButtonWidth, maxLabelWidth + labelsMargin) + paddingLeft + paddingRight
 
         height += buttonSpacing * (buttonCount - 1) + paddingTop + paddingBottom
@@ -376,28 +417,46 @@ class LinearFabMenu @JvmOverloads constructor(
         if (layoutParams.height == LayoutParams.MATCH_PARENT) {
             height = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
         }
-        setMeasuredDimension(width, height)
+
+        return Dimen(width, height)
+    }
+
+    fun isRadial() = openType == TYPE_RADIAL
+    fun isLinear() = openType == TYPE_LINEAR
+
+    fun isLabelsLeft() = labelsPosition == LABEL_POSITION_LEFT
+    fun isLabelsRight() = labelsPosition == LABEL_POSITION_RIGHT
+
+    fun isOpenUp() = openDirection == OPEN_UP
+    fun isOpenDown() = openDirection == OPEN_DOWN
+
+    /**
+     * Determines the position of the FAB button.
+     * If labels are to the right and its a linear FAB, then FAB is on the left edge
+     * If labels are to the left and its a linear FAB, then FAB is on the right edge
+     * If it's a radial FAB, then FAB is on the center
+     */
+    fun calculateButtonsCenter(): Int {
+        return if (isRadial()) {
+            (right - left) / 2
+        } else {
+            if (isLabelsLeft()) {
+                right - left - maxButtonWidth / 2 - paddingRight
+            } else {
+                maxButtonWidth / 2 + paddingLeft
+            }
+        }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        Log.i("LAYOUT", "onLayout has left=$left, top=$top, right=$right, bottom=$bottom")
         val areLabelsToTheLeft = labelsPosition == LABEL_POSITION_LEFT
         val openUp = openDirection == OPEN_UP
 
-
-        val buttonsHorizontalCenter =
-            if (areLabelsToTheLeft) right - left - maxButtonWidth / 2 - paddingRight else maxButtonWidth / 2 + paddingLeft
-
-
-        Log.d("LAYOUTRADIAL", "buttonsHorizontalCenter = $buttonsHorizontalCenter")
-
+        val buttonsHorizontalCenter = calculateButtonsCenter()
 
         val menuButtonTop =
             if (openUp) bottom - top - menuButton.measuredHeight - paddingBottom else paddingTop
         val menuButtonLeft = buttonsHorizontalCenter - menuButton.measuredWidth / 2
-
-        Log.d("LAYOUTRADIAL", "menuButtonLeft=$menuButtonLeft, menuButtonTop= $menuButtonTop")
-
 
         menuButton.layout(
             menuButtonLeft,
@@ -410,7 +469,6 @@ class LinearFabMenu @JvmOverloads constructor(
         val imageTop =
             menuButtonTop + menuButton.measuredHeight / 2 - imageToggle.measuredHeight / 2
 
-        Log.v("LAYOUTRADIAL", "imageLeft= $imageLeft, imageTop=$imageTop")
 
         imageToggle.layout(
             imageLeft,
@@ -445,10 +503,10 @@ class LinearFabMenu @JvmOverloads constructor(
                 childY = if (openUp) nextY - fab.measuredHeight - buttonSpacing else nextY
             } else {
                 val angle = (Math.PI / submenuItems) * (i)
-                childX = if(areLabelsToTheLeft)
+                childX = if (areLabelsToTheLeft)
                     (buttonsHorizontalCenter) - (circleRadius * cos(angle)).toInt() - fab.measuredWidth / 2
                 else
-                     (circleRadius * cos(angle)).toInt() + fab.measuredWidth / 2
+                    (circleRadius * cos(angle)).toInt() + fab.measuredWidth / 2
                 childY =
                     (verticalCenter) - (circleRadius * sin(angle)).toInt() - fab.measuredHeight / 2
             }

@@ -288,6 +288,23 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
 
+
+    fun setChecked(checked: Boolean) {
+        if(checked) {
+            icon?.state = intArrayOf(
+                android.R.attr.state_enabled,
+                android.R.attr.state_checked
+            )
+        }
+        else {
+            icon?.state = intArrayOf(android.R.attr.state_enabled,
+                -android.R.attr.state_checked
+            )
+        }
+        updateBackground()
+    }
+
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (clickListener != null && isEnabled) {
             val label = getTag(R.id.fab_label) as? Label ?: return super.onTouchEvent(event)

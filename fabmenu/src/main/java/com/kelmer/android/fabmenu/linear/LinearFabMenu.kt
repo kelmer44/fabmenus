@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.MotionEvent
@@ -67,10 +68,11 @@ class LinearFabMenu @JvmOverloads constructor(
     private var iconToggleSet: AnimatorSet? = null
 
 
+    private var openType: Int = 0
     private var openDirection: Int = 0
 
     private var labelsPosition: Int
-    private var labelsMargin = dpToPx(0f).toInt()
+    private var labelsMargin = dpToPx(8f).toInt()
     private var labelsVerticalOffset = dpToPx(0f).toInt()
 
     private val labelsStyle: Int
@@ -113,7 +115,7 @@ class LinearFabMenu @JvmOverloads constructor(
     private val animationDelayPerItem: Long = 50L
 
 
-    private var toggleListener: MenuInterface? = null
+    var toggleListener: MenuInterface? = null
 
     private var maxButtonWidth: Int = 0
 
@@ -160,6 +162,7 @@ class LinearFabMenu @JvmOverloads constructor(
         labelsStyle = a.getResourceId(R.styleable.LinearFabMenu_menu_labels_style, 0)
 
         openDirection = a.getInt(R.styleable.LinearFabMenu_menu_openDirection, OPEN_UP)
+        openType = a.getInt(R.styleable.LinearFabMenu_menu_type, TYPE_LINEAR)
         bgColor = a.getColor(R.styleable.LinearFabMenu_menu_backgroundColor, Color.TRANSPARENT)
 
 
@@ -338,18 +341,23 @@ class LinearFabMenu @JvmOverloads constructor(
         setMeasuredDimension(width, height)
     }
 
-
-
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-
+        Log.i("LAYOUT", "onLayout has left=$left, top=$top, right=$right, bottom=$bottom")
         val areLabelsToTheLeft = labelsPosition == LABEL_POSITION_LEFT
         val openUp = openDirection == OPEN_UP
 
 
         val buttonsHorizontalCenter = if (areLabelsToTheLeft) right - left - maxButtonWidth / 2 - paddingRight else maxButtonWidth / 2 + paddingLeft
 
+
+        Log.d("LAYOUT", "buttonsHorizontalCenter = $buttonsHorizontalCenter")
+
+
         val menuButtonTop = if (openUp) bottom - top - menuButton.measuredHeight - paddingBottom else paddingTop
         val menuButtonLeft = buttonsHorizontalCenter - menuButton.measuredWidth / 2
+
+        Log.d("LAYOUT", "menuButtonTop= $menuButtonTop, menuButtonLeft=$menuButtonLeft")
+
 
         menuButton.layout(
             menuButtonLeft,
@@ -361,6 +369,8 @@ class LinearFabMenu @JvmOverloads constructor(
         val imageLeft = buttonsHorizontalCenter - imageToggle.measuredWidth / 2
         val imageTop = menuButtonTop + menuButton.measuredHeight / 2 - imageToggle.measuredHeight / 2
 
+        Log.v("LAYOUT", "imageLeft= $imageLeft, imageTop=$imageTop")
+
         imageToggle.layout(
             imageLeft,
             imageTop,
@@ -368,8 +378,11 @@ class LinearFabMenu @JvmOverloads constructor(
             imageTop + imageToggle.measuredHeight
         )
 
-        var nextY =
-            if (openUp) menuButtonTop + menuButton.measuredHeight + buttonSpacing else menuButtonTop
+
+
+
+
+        var nextY = if (openUp) menuButtonTop + menuButton.measuredHeight + buttonSpacing else menuButtonTop
 
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
@@ -393,23 +406,23 @@ class LinearFabMenu @JvmOverloads constructor(
                 }
             }
 
-            val label = fab.getTag(R.id.fab_label) as? Label
-            if (label != null) {
-                val labelsOffset =(if (usingMenuLabel) maxButtonWidth / 2 else fab.measuredWidth / 2) + labelsMargin
-                val labelXNearButton = if (areLabelsToTheLeft) buttonsHorizontalCenter - labelsOffset else buttonsHorizontalCenter + labelsOffset
-                val labelXAwayFromButton = if (areLabelsToTheLeft) labelXNearButton - label.measuredWidth else labelXNearButton + label.measuredWidth
-
-                val labelLeft = if (areLabelsToTheLeft) labelXAwayFromButton else labelXNearButton
-                val labelRight = if (areLabelsToTheLeft) labelXNearButton else labelXAwayFromButton
-
-                val labelTop = childY - labelsVerticalOffset + (fab.measuredHeight - label.measuredHeight) / 2
-
-                label.layout(labelLeft, labelTop, labelRight, labelTop + label.measuredHeight)
-
-                if (!isMenuOpening) {
-                    label.visibility = View.INVISIBLE
-                }
-            }
+//            val label = fab.getTag(R.id.fab_label) as? Label
+//            if (label != null) {
+//                val labelsOffset =(if (usingMenuLabel) maxButtonWidth / 2 else fab.measuredWidth / 2) + labelsMargin
+//                val labelXNearButton = if (areLabelsToTheLeft) buttonsHorizontalCenter - labelsOffset else buttonsHorizontalCenter + labelsOffset
+//                val labelXAwayFromButton = if (areLabelsToTheLeft) labelXNearButton - label.measuredWidth else labelXNearButton + label.measuredWidth
+//
+//                val labelLeft = if (areLabelsToTheLeft) labelXAwayFromButton else labelXNearButton
+//                val labelRight = if (areLabelsToTheLeft) labelXNearButton else labelXAwayFromButton
+//
+//                val labelTop = childY - labelsVerticalOffset + (fab.measuredHeight - label.measuredHeight) / 2
+//
+//                label.layout(labelLeft, labelTop, labelRight, labelTop + label.measuredHeight)
+//
+//                if (!isMenuOpening) {
+//                    label.visibility = View.INVISIBLE
+//                }
+//            }
 
             nextY =
                 if (openUp) childY - buttonSpacing else childY + child.measuredHeight + buttonSpacing
@@ -417,7 +430,6 @@ class LinearFabMenu @JvmOverloads constructor(
 
     }
     private fun adjustForOvershoot(dimension: Int): Int = (dimension * 0.03 + dimension).toInt()
-
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -503,16 +515,12 @@ class LinearFabMenu @JvmOverloads constructor(
     override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams =
         MarginLayoutParams(context, attrs)
 
-
     override fun generateLayoutParams(p: LayoutParams?): LayoutParams = MarginLayoutParams(p)
-
 
     override fun generateDefaultLayoutParams(): LayoutParams =
         MarginLayoutParams(MarginLayoutParams.WRAP_CONTENT, MarginLayoutParams.WRAP_CONTENT)
 
-
     override fun checkLayoutParams(p: LayoutParams?): Boolean = p is MarginLayoutParams
-
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (closeOnTouchOutside) {
@@ -641,9 +649,6 @@ class LinearFabMenu @JvmOverloads constructor(
         }
     }
 
-
-
-
     private fun setShowAnimation(showAnimation: Animation) {
         menuButtonShowAnimation = showAnimation
         menuButton.showAnimation = showAnimation
@@ -662,8 +667,13 @@ class LinearFabMenu @JvmOverloads constructor(
 
 
     companion object {
+
+        const val TYPE_LINEAR = 0
+        const val TYPE_RADIAL = 1
+
         const val OPEN_UP = 0
         const val OPEN_DOWN = 1
+
 
         const val LABEL_POSITION_LEFT = 0
         const val LABEL_POSITION_RIGHT = 1

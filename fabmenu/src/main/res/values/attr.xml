@@ -87,6 +87,10 @@
             <enum name="up" value="0" />
             <enum name="down" value="1" />
         </attr>
+        <attr name="menu_type" format="enum">
+            <enum name="linear" value="0" />
+            <enum name="radial" value="1" />
+        </attr>
         <attr name="menu_backgroundColor" format="color" />
         <attr name="menu_fab_label" format="string" />
     </declare-styleable>

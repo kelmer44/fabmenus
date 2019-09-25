@@ -65,9 +65,8 @@
         android:layout_alignParentEnd="true"
         android:padding="10dp"
         android:elevation="4dp"
+        app:menu_type="radial"
         app:menu_showShadow="false"
-
-        app:menu_backgroundColor="#ccffffff"
         app:menu_fab_label="Menu label">
 
         <com.kelmer.android.fabmenu.fab.FloatingActionButton

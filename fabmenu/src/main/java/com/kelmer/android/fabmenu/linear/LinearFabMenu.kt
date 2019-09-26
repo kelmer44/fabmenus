@@ -26,10 +26,7 @@ import com.kelmer.android.fabmenu.Util.dpToPx
 import com.kelmer.android.fabmenu.Util.getColor
 import com.kelmer.android.fabmenu.fab.FloatingActionButton
 import com.kelmer.android.fabmenu.fab.Label
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.max
-import kotlin.math.sin
+import kotlin.math.*
 
 class LinearFabMenu @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -123,8 +120,7 @@ class LinearFabMenu @JvmOverloads constructor(
     private var maxButtonWidth: Int = 0
 
 
-
-    var angleOffset : Float = 0f
+    var angleOffset: Float = 0f
 
     init {
 
@@ -207,7 +203,10 @@ class LinearFabMenu @JvmOverloads constructor(
 
 
 
-        angleOffset = (a.getFloat(R.styleable.LinearFabMenu_menu_radial_angleOffset, 0f) * Math.PI /180f).toFloat()
+        angleOffset = (a.getFloat(
+            R.styleable.LinearFabMenu_menu_radial_angleOffset,
+            0f
+        ) * Math.PI / 180f).toFloat()
 
         if (a.hasValue(R.styleable.LinearFabMenu_menu_fab_label)) {
             val label = a.getString(R.styleable.LinearFabMenu_menu_fab_label)
@@ -344,8 +343,8 @@ class LinearFabMenu @JvmOverloads constructor(
 
 
         val dimen =
-            if (openType == TYPE_LINEAR) calculateForLinear(widthMeasureSpec, heightMeasureSpec)
-            else calculateForRadial(widthMeasureSpec, heightMeasureSpec)
+            if (openType == TYPE_LINEAR) linearDimension(widthMeasureSpec, heightMeasureSpec)
+            else radialDimension(widthMeasureSpec, heightMeasureSpec)
 
         width = dimen.width
         height = dimen.height
@@ -358,30 +357,34 @@ class LinearFabMenu @JvmOverloads constructor(
         }
 
 
-
         setMeasuredDimension(width, height)
     }
 
     data class Dimen(val width: Int, val height: Int)
 
-    private fun calculateForRadial(widthMeasureSpec: Int, heightMeasureSpec: Int): Dimen {
-        var width = 0
-        var height = 0
+    private fun radialDimension(widthMeasureSpec: Int, heightMeasureSpec: Int): Dimen {
+        var width = getCircleRadius()
+        var height = getCircleRadius()
+
+
         for (i in 0 until buttonCount) {
             val child = getChildAt(i)
+            //gone elements or imagetoggle do not count for the total width/height
             if (child.visibility == View.GONE || child == imageToggle) continue
-            width = max(menuButton.measuredWidth + buttonSpacing + child.measuredWidth / 2, width)
-            height =
-                max(menuButton.measuredHeight + buttonSpacing + child.measuredHeight, height)
+
+            val floatingActionButton = child as? FloatingActionButton
+            if (floatingActionButton != null) {
+                width = max(width, width + floatingActionButton.measuredWidth / 2 + buttonSpacing)
+                height =
+                    max(height, height + floatingActionButton.measuredHeight / 2 + buttonSpacing)
+            }
         }
 
-        width *= 2
-        height = height
+
         return Dimen(width, height)
     }
 
-
-    private fun calculateForLinear(widthMeasureSpec: Int, heightMeasureSpec: Int): Dimen {
+    private fun linearDimension(widthMeasureSpec: Int, heightMeasureSpec: Int): Dimen {
         var width: Int = 0
         var height: Int = 0
         var maxLabelWidth = 0
@@ -456,18 +459,30 @@ class LinearFabMenu @JvmOverloads constructor(
     }
 
 
-    fun getChildPosForLinear(fab: FloatingActionButton, horizontalCenter: Int, verticalCenter: Int, nextY: Int): Point {
+    fun getChildPosForLinear(
+        fab: FloatingActionButton,
+        horizontalCenter: Int,
+        verticalCenter: Int,
+        nextY: Int
+    ): Point {
         val childX = horizontalCenter - fab.measuredWidth / 2
         val childY = if (isOpenUp()) nextY - fab.measuredHeight - buttonSpacing else nextY
-
         return Point(childX, childY)
     }
 
-    fun getChildPosForRadial(fab: FloatingActionButton, horizontalCenter: Int, verticalCenter: Int, itemPos: Int): Point {
+
+    private fun getCircleRadius() = menuButton.measuredWidth + buttonSpacing
+
+    fun getChildPosForRadial(
+        fab: FloatingActionButton,
+        horizontalCenter: Int,
+        verticalCenter: Int,
+        itemPos: Int
+    ): Point {
 
         //Count items that are FABs and substract 1 (because of the main menu)
         val submenuItems = children.filter { it is FloatingActionButton }.count() - 1
-        val circleRadius = menuButton.measuredWidth + buttonSpacing
+        val circleRadius = getCircleRadius()
         val angle = ((Math.PI / submenuItems) * (itemPos)) + angleOffset
         val unoffsettedAngle = ((Math.PI / submenuItems) * (itemPos))
         Log.w("RADIALANGLEOFFSET ", "Resulting angle is $angle ( original is $unoffsettedAngle)")
@@ -476,7 +491,10 @@ class LinearFabMenu @JvmOverloads constructor(
 
         val childY =
             (verticalCenter) - (circleRadius * sin(angle)).toInt() - fab.measuredHeight / 2
-        Log.d("RADIALANGLEOFFSET", "ButtonsHC=$horizontalCenter, circleRadius=$circleRadius, cos(angle)=${cos(angle)}, posX=$childX, posY=$childY")
+        Log.d(
+            "RADIALANGLEOFFSET",
+            "ButtonsHC=$horizontalCenter, circleRadius=$circleRadius, cos(angle)=${cos(angle)}, posX=$childX, posY=$childY"
+        )
         return Point(childX, childY)
     }
 
@@ -487,7 +505,8 @@ class LinearFabMenu @JvmOverloads constructor(
         val buttonsHorizontalCenter = calculateButtonsCenter()
 
         val menuButtonTop =
-            if (openUp) bottom - top - menuButton.measuredHeight - paddingBottom else paddingTop
+            if (isLinear()) positionMenuButtonForLinear(openUp, top, bottom)
+            else positionMenuButtonForRadial(openUp, top, bottom)
         val menuButtonLeft = buttonsHorizontalCenter - menuButton.measuredWidth / 2
 
         menuButton.layout(
@@ -512,8 +531,6 @@ class LinearFabMenu @JvmOverloads constructor(
 
         var nextY =
             if (openUp) menuButtonTop + menuButton.measuredHeight + buttonSpacing else menuButtonTop
-
-        val circleRadius = menuButton.measuredWidth + buttonSpacing
         val verticalCenter = menuButtonTop + menuButton.measuredHeight / 2
 
 
@@ -553,7 +570,6 @@ class LinearFabMenu @JvmOverloads constructor(
              * Lays out the labels.
              */
 
-
             val label = fab.getTag(R.id.fab_label) as? Label
             if (label != null) {
                 val labelsOffset =
@@ -590,6 +606,31 @@ class LinearFabMenu @JvmOverloads constructor(
         }
 
     }
+
+    private fun positionMenuButtonForRadial(
+        openUp: Boolean,
+        top: Int,
+        bottom: Int
+    ): Int {
+        Log.i("RADIAL","Top $top, Bottom $bottom, subtraction is = ${bottom - top}")
+
+        var maxChildHeight = 0
+        for (i in buttonCount - 1 downTo 0) {
+            val child = getChildAt(i)
+            if (child == imageToggle || child.visibility == View.GONE) continue
+
+            maxChildHeight = max(maxChildHeight, child.measuredHeight)
+        }
+
+
+        return positionMenuButtonForLinear(openUp, top, bottom) - maxChildHeight
+    }
+
+    private fun positionMenuButtonForLinear(
+        openUp: Boolean,
+        top: Int,
+        bottom: Int
+    ) = if (openUp) bottom - top - menuButton.measuredHeight - paddingBottom else paddingTop
 
     private fun adjustForOvershoot(dimension: Int): Int = (dimension * 0.03 + dimension).toInt()
 

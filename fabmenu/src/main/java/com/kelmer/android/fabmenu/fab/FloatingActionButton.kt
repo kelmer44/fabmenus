@@ -25,7 +25,7 @@ import com.kelmer.android.fabmenu.Util.getColor
 import kotlin.math.abs
 import kotlin.math.max
 
-class FloatingActionButton @JvmOverloads constructor(
+open class FloatingActionButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ImageButton(context, attrs, defStyleAttr), Checkable {
 

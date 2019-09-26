@@ -28,7 +28,7 @@ import com.kelmer.android.fabmenu.fab.FloatingActionButton
 import com.kelmer.android.fabmenu.fab.Label
 import kotlin.math.*
 
-class LinearFabMenu @JvmOverloads constructor(
+open class LinearFabMenu @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
 

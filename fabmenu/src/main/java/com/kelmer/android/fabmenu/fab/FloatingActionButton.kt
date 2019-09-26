@@ -13,8 +13,10 @@ import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Checkable
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.kelmer.android.fabmenu.R
 import com.kelmer.android.fabmenu.Util
@@ -25,7 +27,33 @@ import kotlin.math.max
 
 class FloatingActionButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : ImageButton(context, attrs, defStyleAttr) {
+) : ImageButton(context, attrs, defStyleAttr), Checkable {
+
+
+    private var mChecked: Boolean = false
+    override fun isChecked(): Boolean = mChecked
+
+    override fun toggle() {
+        isChecked = !mChecked
+        refreshDrawableState()
+    }
+
+    override fun setChecked(checked: Boolean) {
+        if (mChecked == checked)
+            return
+        mChecked = checked
+        refreshDrawableState()
+    }
+
+    override fun onCreateDrawableState(extraSpace: Int): IntArray {
+        val drawableState = super.onCreateDrawableState(extraSpace + 1)
+        if (isChecked)
+            AppCompatImageView.mergeDrawableStates(
+                drawableState,
+                intArrayOf(android.R.attr.state_checked)
+            )
+        return drawableState
+    }
 
 
     var fabSize: Int
@@ -76,6 +104,10 @@ class FloatingActionButton @JvmOverloads constructor(
             R.styleable.FloatingActionButton_fab_colorRipple,
             getColor(R.color.fab_color_ripple)
         )
+
+        val checked = a.getBoolean(R.styleable.FloatingActionButton_fab_checked, false)
+        isChecked = checked
+
 
         showShadow = a.getBoolean(R.styleable.FloatingActionButton_fab_showShadow, true)
         shadowColor = a.getColor(
@@ -178,6 +210,7 @@ class FloatingActionButton @JvmOverloads constructor(
             intArrayOf(android.R.attr.state_pressed),
             createCircleDrawable(colorPressed)
         )
+
         drawable.addState(intArrayOf(), createCircleDrawable(colorNormal))
 
         if (Util.isLollipop()) {
@@ -263,7 +296,6 @@ class FloatingActionButton @JvmOverloads constructor(
 
             val ripple = bgDrawable as RippleDrawable
             ripple.state = intArrayOf(
-                android.R.attr.state_enabled,
                 android.R.attr.state_pressed
             )
             ripple.setHotspot(calculateCenterX(), calculateCenterY())
@@ -287,22 +319,21 @@ class FloatingActionButton @JvmOverloads constructor(
         }
     }
 
-
-
-    fun setChecked(checked: Boolean) {
-        if(checked) {
-            icon?.state = intArrayOf(
-                android.R.attr.state_enabled,
-                android.R.attr.state_checked
-            )
-        }
-        else {
-            icon?.state = intArrayOf(android.R.attr.state_enabled,
-                -android.R.attr.state_checked
-            )
-        }
-        updateBackground()
-    }
+//
+//    fun setChecked(checked: Boolean) {
+//        val bg = getIconDrawable()
+//        if (bg != null) {
+//            if (checked) {
+//                bg.state = intArrayOf(
+//                    android.R.attr.state_enabled, android.R.attr.state_checked
+//                )
+//            } else {
+//                bg.state = intArrayOf(
+//                    android.R.attr.state_enabled
+//                )
+//            }
+//        }
+//    }
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -403,7 +434,12 @@ class FloatingActionButton @JvmOverloads constructor(
             erase.xfermode = PORTER_DUFF_CLEAR
 
             if (!isInEditMode) {
-                paint.setShadowLayer(shadowRadius.toFloat(), shadowXOffset.toFloat(), shadowYOffset.toFloat(), shadowColor)
+                paint.setShadowLayer(
+                    shadowRadius.toFloat(),
+                    shadowXOffset.toFloat(),
+                    shadowYOffset.toFloat(),
+                    shadowColor
+                )
             }
 
         }
@@ -494,6 +530,7 @@ class FloatingActionButton @JvmOverloads constructor(
             updateBackground()
         }
     }
+
 
     override fun setVisibility(visibility: Int) {
         super.setVisibility(visibility)

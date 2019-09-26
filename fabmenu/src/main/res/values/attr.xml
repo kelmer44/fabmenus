@@ -13,6 +13,7 @@
         <attr name="fab_colorRipple" format="color" />
         <attr name="fab_showShadow" format="boolean" />
         <attr name="fab_shadowColor" format="color" />
+        <attr name="fab_checked" format="boolean" />
 <!--        <attr name="fab_shadowRadius" format="dimension" />-->
 <!--        <attr name="fab_shadowXOffset" format="dimension" />-->
 <!--        <attr name="fab_shadowYOffset" format="dimension" />-->

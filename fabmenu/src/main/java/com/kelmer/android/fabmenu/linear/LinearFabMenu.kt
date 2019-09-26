@@ -366,7 +366,6 @@ class LinearFabMenu @JvmOverloads constructor(
         var width = getCircleRadius()
         var height = getCircleRadius()
 
-
         for (i in 0 until buttonCount) {
             val child = getChildAt(i)
             //gone elements or imagetoggle do not count for the total width/height

@@ -274,12 +274,12 @@ class Label @JvmOverloads constructor(
         when (action) {
             MotionEvent.ACTION_UP -> {
                 onActionUp()
-                fabb.onActionUp()
+//                fabb.onActionUp()
             }
 
             MotionEvent.ACTION_CANCEL -> {
                 onActionUp()
-                fabb.onActionUp()
+//                fabb.onActionUp()
             }
         }
 
@@ -292,13 +292,13 @@ class Label @JvmOverloads constructor(
 
             override fun onDown(e: MotionEvent): Boolean {
                 onActionDown()
-                mFab?.onActionDown()
+//                mFab?.onActionDown()
                 return super.onDown(e)
             }
 
             override fun onSingleTapUp(e: MotionEvent): Boolean {
                 onActionUp()
-                mFab?.onActionUp()
+//                mFab?.onActionUp()
                 return super.onSingleTapUp(e)
             }
         })

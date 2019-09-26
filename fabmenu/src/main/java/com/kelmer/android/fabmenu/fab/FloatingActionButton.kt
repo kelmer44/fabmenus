@@ -128,6 +128,7 @@ open class FloatingActionButton @JvmOverloads constructor(
         hideAnimation = AnimationUtils.loadAnimation(context, R.anim.fab_scale_down)
 
         isClickable = true
+        refreshDrawableState()
     }
 
 

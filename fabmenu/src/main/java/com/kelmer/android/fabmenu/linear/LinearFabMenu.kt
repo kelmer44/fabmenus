@@ -103,7 +103,7 @@ open class LinearFabMenu @JvmOverloads constructor(
     private var isAnimated = true
 
 
-    private var closeOnTouchOutside: Boolean = false
+    private var closeOnTouchOutside: Boolean = true
 
     private var bgColor: Int
 

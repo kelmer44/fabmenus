@@ -752,7 +752,7 @@ open class LinearFabMenu @JvmOverloads constructor(
 
     private fun isOpened(): Boolean = menuOpened
 
-    private fun open(animated: Boolean) {
+    public fun open(animated: Boolean) {
         if (!isOpened()) {
             if (isBackgroundEnabled()) {
                 showBackgroundAnimator.start()
@@ -802,7 +802,7 @@ open class LinearFabMenu @JvmOverloads constructor(
         }
     }
 
-    private fun close(animated: Boolean) {
+    public fun close(animated: Boolean) {
         if (isOpened()) {
             if (isBackgroundEnabled()) {
                 hideBackgroundAnimator.start()

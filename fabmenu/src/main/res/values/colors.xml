@@ -16,4 +16,7 @@
 
     <color name="fab_progress_color">#FF009688</color>
     <color name="fab_background_color">#4D000000</color>
+
+
+    <color name="fab_reveal_color">#5B6A77</color>
 </resources>

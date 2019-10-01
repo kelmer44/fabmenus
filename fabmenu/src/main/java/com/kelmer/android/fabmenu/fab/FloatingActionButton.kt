@@ -54,6 +54,7 @@ class FloatingActionButton @JvmOverloads constructor(
     private var colorDisabled: Int
     private var colorRipple: Int
 
+    private var colorReveal: Int
 
     private var bgDrawable: Drawable? = null
     private var labelText: String = ""
@@ -103,6 +104,8 @@ class FloatingActionButton @JvmOverloads constructor(
             R.styleable.FloatingActionButton_fab_colorRipple,
             getColor(R.color.fab_color_ripple)
         )
+
+        colorReveal = a.getColor(R.styleable.FloatingActionButton_fab_colorReveal, getColor(R.color.fab_reveal_color))
 
         val checked = a.getBoolean(R.styleable.FloatingActionButton_fab_checked, false)
         isChecked = checked
@@ -714,5 +717,17 @@ class FloatingActionButton @JvmOverloads constructor(
         this.progressWidth = progressWidth
     }
 
+
+
+    fun doReveal(color: Int){
+
+        bgDrawable?.setTint(color)
+            ViewAnimationUtils.createCircularReveal(this, width, height, 0f, height * 2f).start()
+    }
+
+    fun undoReveal(){
+        bgDrawable?.setTintList(null)
+            ViewAnimationUtils.createCircularReveal(this, width, height, 0f, height * 2f)
+    }
 
 }

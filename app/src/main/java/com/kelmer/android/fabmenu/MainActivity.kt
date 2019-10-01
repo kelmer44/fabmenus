@@ -1,8 +1,10 @@
 package com.kelmer.android.fabmenu
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.kelmer.android.fabmenu.fab.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -37,9 +39,14 @@ class MainActivity : AppCompatActivity() {
         }
         menu_red.toggleListener = listener
 
-
+        progress_bar.setOnClickListener {
+            progress_bar.doReveal(resources.getColor(R.color.fab_reveal_color))
+        }
         progress_bar.showProgressBar()
         progress_bar_mini.showProgressBar()
+        progress_bar_mini.setOnClickListener {
+            progress_bar.undoReveal()
+        }
 
 
         gooey_menu.showProgressBar()

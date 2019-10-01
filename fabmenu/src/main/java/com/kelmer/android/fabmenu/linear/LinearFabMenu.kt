@@ -55,6 +55,12 @@ open class LinearFabMenu @JvmOverloads constructor(
     private var menuColorPressed: Int
     private var menuColorRipple: Int
 
+
+
+    private var menuRevealColor: Int
+    private var showReveal: Boolean = false
+
+
     private var menuLabelText: String = ""
     private var usingMenuLabel: Boolean = false
     private var menuFabSize: Int
@@ -129,6 +135,8 @@ open class LinearFabMenu @JvmOverloads constructor(
 
 
 
+
+
     var angleOffset: Float = 0f
 
     init {
@@ -180,11 +188,14 @@ open class LinearFabMenu @JvmOverloads constructor(
         showProgressBackground =
             a.getBoolean(R.styleable.LinearFabMenu_menu_progress_showBackground, true)
 
-        progressWidth = a.getDimension(R.styleable.LinearFabMenu_menu_progress_width, resources.getDimension(R.dimen.fab_progress_width)).toInt()
+        progressWidth = a.getDimension(
+            R.styleable.LinearFabMenu_menu_progress_width,
+            resources.getDimension(R.dimen.fab_progress_width)
+        ).toInt()
 
 
-
-
+        menuRevealColor = a.getColor(R.styleable.LinearFabMenu_menu_reveal_color, getColor(R.color.fab_reveal_color))
+        showReveal = a.getBoolean(R.styleable.LinearFabMenu_menu_do_reveal, false)
 
         menuShowShadow = a.getBoolean(R.styleable.LinearFabMenu_menu_showShadow, true)
         menuShadowColor = a.getColor(
@@ -640,7 +651,7 @@ open class LinearFabMenu @JvmOverloads constructor(
         top: Int,
         bottom: Int
     ): Int {
-        Log.i("RADIAL","Top $top, Bottom $bottom, subtraction is = ${bottom - top}")
+        Log.i("RADIAL", "Top $top, Bottom $bottom, subtraction is = ${bottom - top}")
 
         var maxChildHeight = 0
         for (i in buttonCount - 1 downTo 0) {
@@ -783,6 +794,10 @@ open class LinearFabMenu @JvmOverloads constructor(
 
     public fun open(animated: Boolean) {
         if (!isOpened()) {
+
+            if(showReveal) {
+                menuButton.doReveal(menuRevealColor)
+            }
             if (isBackgroundEnabled()) {
                 showBackgroundAnimator.start()
             }
@@ -833,6 +848,12 @@ open class LinearFabMenu @JvmOverloads constructor(
 
     public fun close(animated: Boolean) {
         if (isOpened()) {
+
+            if(showReveal) {
+                menuButton.undoReveal()
+            }
+
+
             if (isBackgroundEnabled()) {
                 hideBackgroundAnimator.start()
             }
@@ -894,11 +915,11 @@ open class LinearFabMenu @JvmOverloads constructor(
         closeOnTouchOutside = close
     }
 
-    fun showProgressBar(){
+    fun showProgressBar() {
         menuButton.showProgressBar()
     }
 
-    fun hideProgress(){
+    fun hideProgress() {
         menuButton.hideProgress()
     }
 
@@ -923,5 +944,7 @@ open class LinearFabMenu @JvmOverloads constructor(
 
         const val ANIMATION_DURATION = 300L
     }
+
+
 
 }

@@ -53,8 +53,10 @@ class FloatingActionButton @JvmOverloads constructor(
     private var colorPressed: Int
     private var colorDisabled: Int
     private var colorRipple: Int
-
     private var colorReveal: Int
+
+
+    private var currentColor: Int
 
     private var bgDrawable: Drawable? = null
     private var labelText: String = ""
@@ -92,6 +94,7 @@ class FloatingActionButton @JvmOverloads constructor(
             R.styleable.FloatingActionButton_fab_colorNormal,
             getColor(R.color.fab_color_normal)
         )
+        currentColor = colorNormal
         colorPressed = a.getColor(
             R.styleable.FloatingActionButton_fab_colorPressed,
             getColor(R.color.fab_color_pressed)
@@ -329,7 +332,7 @@ class FloatingActionButton @JvmOverloads constructor(
             createCircleDrawable(colorPressed)
         )
 
-        drawable.addState(intArrayOf(), createCircleDrawable(colorNormal))
+        drawable.addState(intArrayOf(), createCircleDrawable(currentColor))
 
         if (Util.isLollipop()) {
             val ripple: RippleDrawable = RippleDrawable(
@@ -397,6 +400,7 @@ class FloatingActionButton @JvmOverloads constructor(
 
     internal fun setColors(colorNormal: Int, colorPressed: Int, colorRipple: Int) {
         this.colorNormal = colorNormal
+        this.currentColor = colorNormal
         this.colorPressed = colorPressed
         this.colorRipple = colorRipple
     }
@@ -548,8 +552,7 @@ class FloatingActionButton @JvmOverloads constructor(
             setLayerType(View.LAYER_TYPE_SOFTWARE, null)
             paint.style = Paint.Style.FILL
 
-            Log.i("Color", "Color of the shadow paint $colorNormal")
-            paint.color = colorNormal
+            paint.color = currentColor
 
             erase.xfermode = PORTER_DUFF_CLEAR
 
@@ -717,17 +720,15 @@ class FloatingActionButton @JvmOverloads constructor(
         this.progressWidth = progressWidth
     }
 
-
-
     fun doReveal(color: Int){
-
-        bgDrawable?.setTint(color)
-//            ViewAnimationUtils.createCircularReveal(this, width, height, 0f, height * 2f).start()
+        currentColor = color
+        updateBackground()
     }
 
     fun undoReveal(){
-        bgDrawable?.setTintList(null)
-//            ViewAnimationUtils.createCircularReveal(this, width, height, 0f, height * 2f)
+        currentColor = colorNormal
+        updateBackground()
+
     }
 
 }

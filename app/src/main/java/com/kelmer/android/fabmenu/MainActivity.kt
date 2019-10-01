@@ -41,5 +41,10 @@ class MainActivity : AppCompatActivity() {
         progress_bar.showProgressBar()
         progress_bar_mini.showProgressBar()
 
+
+        gooey_menu.showProgressBar()
+
+        menu_red.showProgressBar()
+
     }
 }

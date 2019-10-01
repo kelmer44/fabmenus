@@ -12,15 +12,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/big"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+
+
+        app:menu_progress_backgroundColor="@android:color/holo_green_dark"
+        app:menu_progress_color="@android:color/holo_purple"
+        app:menu_progress_showBackground="true"
+        app:menu_progress_width="4dp"
+
+
         app:menu_colorNormal="@android:color/holo_blue_dark"
         app:menu_colorPressed="@android:color/holo_orange_dark"
         app:menu_colorRipple="@android:color/holo_red_light"
         app:menu_radial_angleOffset="-20"
+
         app:menu_showShadow="false"
         app:menu_type="radial">
 
@@ -213,9 +221,12 @@
         android:layout_height="match_parent"
         android:elevation="4dp"
         android:padding="10dp"
-        android:visibility="gone"
         app:menu_backgroundColor="#ddffffff"
         app:menu_labels_position="left"
+        app:menu_progress_backgroundColor="@android:color/holo_green_dark"
+        app:menu_progress_color="@android:color/holo_purple"
+        app:menu_progress_showBackground="true"
+        app:menu_progress_width="4dp"
         app:menu_showShadow="false"
         app:menu_type="linear">
 

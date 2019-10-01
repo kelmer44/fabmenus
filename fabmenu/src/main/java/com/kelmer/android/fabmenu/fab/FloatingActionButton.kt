@@ -133,7 +133,10 @@ class FloatingActionButton @JvmOverloads constructor(
         showProgressBackground =
             a.getBoolean(R.styleable.FloatingActionButton_fab_progress_showBackground, true)
 
-        progressWidth = a.getDimension(R.styleable.FloatingActionButton_fab_progress_width, resources.getDimension(R.dimen.fab_progress_width)).toInt()
+        progressWidth = a.getDimension(
+            R.styleable.FloatingActionButton_fab_progress_width,
+            resources.getDimension(R.dimen.fab_progress_width)
+        ).toInt()
 
 
         a.recycle()
@@ -144,6 +147,7 @@ class FloatingActionButton @JvmOverloads constructor(
         isClickable = true
         refreshDrawableState()
     }
+
 
 
     private fun getCircleSize(): Int =
@@ -699,6 +703,15 @@ class FloatingActionButton @JvmOverloads constructor(
         lastTimeAnimated = SystemClock.uptimeMillis()
         setupProgressBounds()
         updateBackground()
+    }
+
+    fun setProgressColors(progressColor: Int, progressBackgroundColor: Int) {
+        this.progressBackgroundColor = progressBackgroundColor
+        this.progressColor = progressColor
+    }
+
+    fun setProgressWidth(progressWidth: Int) {
+        this.progressWidth = progressWidth
     }
 
 

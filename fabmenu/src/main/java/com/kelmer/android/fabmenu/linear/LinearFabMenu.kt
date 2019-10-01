@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Point
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.util.AttributeSet
@@ -120,6 +121,14 @@ open class LinearFabMenu @JvmOverloads constructor(
     private var maxButtonWidth: Int = 0
 
 
+    // Progress
+    private var progressWidth: Int = dpToPx(6f).toInt()
+    private var progressColor: Int
+    private var progressBackgroundColor: Int
+    private var showProgressBackground: Boolean = false
+
+
+
     var angleOffset: Float = 0f
 
     init {
@@ -158,6 +167,21 @@ open class LinearFabMenu @JvmOverloads constructor(
             R.styleable.LinearFabMenu_menu_labels_colorRipple,
             getColor(R.color.fab_label_ripple)
         )
+
+
+        progressColor = a.getColor(
+            R.styleable.LinearFabMenu_menu_progress_color,
+            getColor(R.color.fab_progress_color)
+        )
+        progressBackgroundColor = a.getColor(
+            R.styleable.LinearFabMenu_menu_progress_backgroundColor,
+            getColor(R.color.fab_background_color)
+        )
+        showProgressBackground =
+            a.getBoolean(R.styleable.LinearFabMenu_menu_progress_showBackground, true)
+
+        progressWidth = a.getDimension(R.styleable.LinearFabMenu_menu_progress_width, resources.getDimension(R.dimen.fab_progress_width)).toInt()
+
 
 
 
@@ -270,6 +294,11 @@ open class LinearFabMenu @JvmOverloads constructor(
         menuButton.fabSize = menuFabSize
         menuButton.updateBackground()
         menuButton.setLabelText(menuLabelText)
+
+        menuButton.setProgressColors(progressColor, progressBackgroundColor)
+        menuButton.setProgressWidth(progressWidth)
+        menuButton.setShowProgressBackground(showProgressBackground)
+
 
         //Menu button is actually two views, a FAB and an image on top
         imageToggle = ImageView(context)
@@ -861,11 +890,17 @@ open class LinearFabMenu @JvmOverloads constructor(
         menuButton.hideAnimation = hideAnimation
     }
 
-
     fun setClosedOnTouchOutside(close: Boolean) {
         closeOnTouchOutside = close
     }
 
+    fun showProgressBar(){
+        menuButton.showProgressBar()
+    }
+
+    fun hideProgress(){
+        menuButton.hideProgress()
+    }
 
     companion object {
 

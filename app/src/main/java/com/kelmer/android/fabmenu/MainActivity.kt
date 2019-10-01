@@ -37,5 +37,9 @@ class MainActivity : AppCompatActivity() {
         }
         menu_red.toggleListener = listener
 
+
+        progress_bar.showProgressBar()
+        progress_bar_mini.showProgressBar()
+
     }
 }

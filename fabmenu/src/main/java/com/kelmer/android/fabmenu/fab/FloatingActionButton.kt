@@ -8,6 +8,7 @@ import android.graphics.drawable.*
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.Shape
 import android.os.Build
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
@@ -23,37 +24,12 @@ import com.kelmer.android.fabmenu.Util
 import com.kelmer.android.fabmenu.Util.dpToPx
 import com.kelmer.android.fabmenu.Util.getColor
 import kotlin.math.abs
+import kotlin.math.cos
 import kotlin.math.max
 
-open class FloatingActionButton @JvmOverloads constructor(
+class FloatingActionButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ImageButton(context, attrs, defStyleAttr), Checkable {
-
-
-    private var mChecked: Boolean = false
-    override fun isChecked(): Boolean = mChecked
-
-    override fun toggle() {
-        isChecked = !mChecked
-        refreshDrawableState()
-    }
-
-    override fun setChecked(checked: Boolean) {
-        if (mChecked == checked)
-            return
-        mChecked = checked
-        refreshDrawableState()
-    }
-
-    override fun onCreateDrawableState(extraSpace: Int): IntArray {
-        val drawableState = super.onCreateDrawableState(extraSpace + 1)
-        if (isChecked)
-            AppCompatImageView.mergeDrawableStates(
-                drawableState,
-                intArrayOf(android.R.attr.state_checked)
-            )
-        return drawableState
-    }
 
 
     var fabSize: Int
@@ -82,8 +58,31 @@ open class FloatingActionButton @JvmOverloads constructor(
     private var bgDrawable: Drawable? = null
     private var labelText: String = ""
 
-
     private var clickListener: View.OnClickListener? = null
+
+
+    // Progress
+    private var progressBarEnabled: Boolean = false
+    private var progressWidth: Int = dpToPx(6f).toInt()
+    private var progressColor: Int
+    private var progressBackgroundColor: Int
+    private var showProgressBackground: Boolean = false
+    private var progressCircleBounds = RectF()
+
+    private var lastTimeAnimated: Long = 0
+    private val spinSpeed = 195f //Degrees per second
+
+    private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var currentProgress: Float = 0f
+
+    private val barLength = 16
+    private var barExtraLength: Float = 0f
+
+    private var pausedTimeWithoutGrowing: Long = 0
+    private var timeStartGrowing: Float = 0.0f
+    private var barGrowingFromFront = true
+
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, 0, 0)
@@ -122,6 +121,21 @@ open class FloatingActionButton @JvmOverloads constructor(
             labelText = text
         }
 
+
+        progressColor = a.getColor(
+            R.styleable.FloatingActionButton_fab_progress_color,
+            getColor(R.color.fab_progress_color)
+        )
+        progressBackgroundColor = a.getColor(
+            R.styleable.FloatingActionButton_fab_progress_backgroundColor,
+            getColor(R.color.fab_background_color)
+        )
+        showProgressBackground =
+            a.getBoolean(R.styleable.FloatingActionButton_fab_progress_showBackground, true)
+
+        progressWidth = a.getDimension(R.styleable.FloatingActionButton_fab_progress_width, resources.getDimension(R.dimen.fab_progress_width)).toInt()
+
+
         a.recycle()
 
         showAnimation = AnimationUtils.loadAnimation(context, R.anim.fab_scale_up)
@@ -136,8 +150,21 @@ open class FloatingActionButton @JvmOverloads constructor(
         resources.getDimensionPixelSize(if (fabSize == SIZE_NORMAL) R.dimen.fab_size_normal else R.dimen.fab_size_mini)
 
 
-    private fun calculateMeasuredWidth(): Int = getCircleSize() + calculateShadowWidth()
-    private fun calculateMeasuredHeight(): Int = getCircleSize() + calculateShadowHeight()
+    private fun calculateMeasuredWidth(): Int {
+        var width = getCircleSize() + calculateShadowWidth()
+        if (progressBarEnabled) {
+            width += progressWidth * 2
+        }
+        return width
+    }
+
+    private fun calculateMeasuredHeight(): Int {
+        var height = getCircleSize() + calculateShadowHeight()
+        if (progressBarEnabled) {
+            height += progressWidth * 2
+        }
+        return height
+    }
 
 
     private fun calculateShadowWidth(): Int = if (hasShadow()) getShadowX() * 2 else 0
@@ -154,9 +181,88 @@ open class FloatingActionButton @JvmOverloads constructor(
     }
 
 
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        if (progressBarEnabled) {
+            if (showProgressBackground) {
+                canvas.drawArc(progressCircleBounds, 360f, 360f, false, backgroundPaint)
+            }
+
+            val deltaTime = SystemClock.uptimeMillis() - lastTimeAnimated
+            val deltaNormalized = deltaTime * spinSpeed / 1000f
+
+            updateProgressLength(deltaTime)
+
+            currentProgress += deltaNormalized
+            if (currentProgress > 360f) {
+                currentProgress -= 360f
+            }
+
+            lastTimeAnimated = SystemClock.uptimeMillis()
+            val from: Float = if (isInEditMode) 0f else currentProgress - 90
+            val to = if (isInEditMode) 135f else barLength + barExtraLength
+
+            canvas.drawArc(progressCircleBounds, from, to, false, progressPaint)
+
+            invalidate()
+        }
+    }
+
+    private fun updateProgressLength(deltaTime: Long) {
+        if (pausedTimeWithoutGrowing >= PAUSE_GROWING_TIME) {
+            timeStartGrowing += deltaTime
+
+            if (timeStartGrowing > BAR_SPIN_CYCLE_TIME) {
+                timeStartGrowing -= BAR_SPIN_CYCLE_TIME
+                pausedTimeWithoutGrowing = 0
+                barGrowingFromFront = !barGrowingFromFront
+            }
+
+            val distance: Float =
+                cos((timeStartGrowing / BAR_SPIN_CYCLE_TIME + 1) * Math.PI.toFloat()) / 2 + 0.5f
+            val length: Float = (BAR_MAX_LENGTH - barLength).toFloat()
+
+            if (barGrowingFromFront) {
+                barExtraLength = distance * length
+            } else {
+                val newLength = length * (1 - distance)
+                currentProgress += (barExtraLength - newLength)
+                barExtraLength = newLength
+            }
+        } else {
+            pausedTimeWithoutGrowing += deltaTime
+        }
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
+
+        setupProgressBounds()
+        setupProgressBarPaints()
         updateBackground()
+    }
+
+    private fun setupProgressBarPaints() {
+        backgroundPaint.color = progressBackgroundColor
+        backgroundPaint.style = Paint.Style.STROKE
+        backgroundPaint.strokeWidth = progressWidth.toFloat()
+
+        progressPaint.color = progressColor
+        progressPaint.style = Paint.Style.STROKE
+        progressPaint.strokeWidth = progressWidth.toFloat()
+
+    }
+
+    private fun setupProgressBounds() {
+        val circleInsetHorizontal = if (hasShadow()) getShadowX() else 0
+        val circleInsetVertical = if (hasShadow()) getShadowY() else 0
+        progressCircleBounds = RectF(
+            (circleInsetHorizontal + progressWidth / 2).toFloat(),
+            (circleInsetVertical + progressWidth / 2).toFloat(),
+            (calculateMeasuredWidth() - circleInsetHorizontal - progressWidth / 2).toFloat(),
+            (calculateMeasuredHeight() - circleInsetVertical - progressWidth / 2).toFloat()
+        )
+
     }
 
 
@@ -176,15 +282,19 @@ open class FloatingActionButton @JvmOverloads constructor(
         Log.w("ICONSIZE", "Icon with label $labelText has iconSize = $iconSize")
         val iconOffset = (getCircleSize() - (if (iconSize > 0) iconSize else this.iconSize)) / 2
         Log.w("ICONSIZE", "Icon with label $labelText has iconOffset = $iconOffset")
-        val circleInsetHorizontal: Int =
+        var circleInsetHorizontal: Int =
             if (hasShadow()) (shadowRadius + abs(shadowXOffset)) else 0
-        val circleInsetVertical: Int =
+        var circleInsetVertical: Int =
             if (hasShadow()) (shadowRadius + abs(shadowYOffset)) else 0
 
-        Log.w(
-            "ICONSIZE",
-            "Icon with label " + getLabelText() + " has insethorizontal = " + circleInsetHorizontal + " and vertical " + circleInsetVertical
-        )
+
+
+        if (progressBarEnabled) {
+            circleInsetHorizontal += progressWidth
+            circleInsetVertical += progressWidth
+        }
+
+
         layerDrawable.setLayerInset(
             if (hasShadow()) 2 else 1,
             circleInsetHorizontal + iconOffset,
@@ -386,7 +496,9 @@ open class FloatingActionButton @JvmOverloads constructor(
         val PORTER_DUFF_CLEAR = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         const val SIZE_NORMAL = 0
         const val SIZE_MINI = 1
-
+        const val PAUSE_GROWING_TIME: Long = 200
+        const val BAR_SPIN_CYCLE_TIME = 500f
+        const val BAR_MAX_LENGTH = 270
     }
 
 
@@ -423,7 +535,7 @@ open class FloatingActionButton @JvmOverloads constructor(
         private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         private val erase = Paint(Paint.ANTI_ALIAS_FLAG)
 
-        private val radius: Float = getCircleSize() / 2f
+        private var radius: Float = getCircleSize() / 2f
 
         init {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null)
@@ -442,6 +554,9 @@ open class FloatingActionButton @JvmOverloads constructor(
                     shadowColor
                 )
             }
+            if (progressBarEnabled && showProgressBackground) {
+                radius += progressWidth
+            }
 
         }
 
@@ -453,7 +568,7 @@ open class FloatingActionButton @JvmOverloads constructor(
         override fun setAlpha(alpha: Int) {
         }
 
-        override fun getOpacity(): Int = 0
+        override fun getOpacity(): Int = PixelFormat.OPAQUE
 
         override fun setColorFilter(colorFilter: ColorFilter?) {
         }
@@ -540,4 +655,51 @@ open class FloatingActionButton @JvmOverloads constructor(
             label.visibility = visibility
         }
     }
+
+
+    private var mChecked: Boolean = false
+    override fun isChecked(): Boolean = mChecked
+
+    override fun toggle() {
+        isChecked = !mChecked
+        refreshDrawableState()
+    }
+
+    override fun setChecked(checked: Boolean) {
+        if (mChecked == checked)
+            return
+        mChecked = checked
+        refreshDrawableState()
+    }
+
+    override fun onCreateDrawableState(extraSpace: Int): IntArray {
+        val drawableState = super.onCreateDrawableState(extraSpace + 1)
+        if (isChecked)
+            AppCompatImageView.mergeDrawableStates(
+                drawableState,
+                intArrayOf(android.R.attr.state_checked)
+            )
+        return drawableState
+    }
+
+    @Synchronized
+    fun hideProgress() {
+        progressBarEnabled = false
+        updateBackground()
+    }
+
+    @Synchronized
+    fun setShowProgressBackground(show: Boolean) {
+        showProgressBackground = show
+    }
+
+    @Synchronized
+    fun showProgressBar() {
+        progressBarEnabled = true
+        lastTimeAnimated = SystemClock.uptimeMillis()
+        setupProgressBounds()
+        updateBackground()
+    }
+
+
 }

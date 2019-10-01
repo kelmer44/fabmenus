@@ -14,19 +14,12 @@
         <attr name="fab_showShadow" format="boolean" />
         <attr name="fab_shadowColor" format="color" />
         <attr name="fab_checked" format="boolean" />
-<!--        <attr name="fab_shadowRadius" format="dimension" />-->
-<!--        <attr name="fab_shadowXOffset" format="dimension" />-->
-<!--        <attr name="fab_shadowYOffset" format="dimension" />-->
-<!--        <attr name="fab_showAnimation" format="reference" />-->
-<!--        <attr name="fab_hideAnimation" format="reference" />-->
         <attr name="fab_label" format="string" />
 <!--        <attr name="fab_elevationCompat" format="dimension" />-->
-<!--        <attr name="fab_progress_color" format="color" />-->
-<!--        <attr name="fab_progress_backgroundColor" format="color" />-->
-<!--        <attr name="fab_progress_indeterminate" format="boolean" />-->
-<!--        <attr name="fab_progress_max" format="integer" />-->
-<!--        <attr name="fab_progress" format="integer" />-->
-<!--        <attr name="fab_progress_showBackground" format="boolean" />-->
+        <attr name="fab_progress_color" format="color" />
+        <attr name="fab_progress_backgroundColor" format="color" />
+        <attr name="fab_progress_showBackground" format="boolean" />
+        <attr name="fab_progress_width" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="LinearFabMenu">

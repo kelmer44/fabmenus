@@ -722,12 +722,12 @@ class FloatingActionButton @JvmOverloads constructor(
     fun doReveal(color: Int){
 
         bgDrawable?.setTint(color)
-            ViewAnimationUtils.createCircularReveal(this, width, height, 0f, height * 2f).start()
+//            ViewAnimationUtils.createCircularReveal(this, width, height, 0f, height * 2f).start()
     }
 
     fun undoReveal(){
         bgDrawable?.setTintList(null)
-            ViewAnimationUtils.createCircularReveal(this, width, height, 0f, height * 2f)
+//            ViewAnimationUtils.createCircularReveal(this, width, height, 0f, height * 2f)
     }
 
 }

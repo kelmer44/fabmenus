@@ -39,15 +39,24 @@ class MainActivity : AppCompatActivity() {
         }
         menu_red.toggleListener = listener
 
+        progress_bar_mini.showProgressBar()
+
+
+
         progress_bar.setOnClickListener {
             progress_bar.doReveal(resources.getColor(R.color.fab_reveal_color))
         }
-        progress_bar.showProgressBar()
-        progress_bar_mini.showProgressBar()
         progress_bar_mini.setOnClickListener {
             progress_bar.undoReveal()
         }
 
+        mini.setOnClickListener {
+            progress_bar.hideProgress()
+        }
+
+        mini_two.setOnClickListener {
+            progress_bar.showProgressBar()
+        }
 
         gooey_menu.showProgressBar()
 

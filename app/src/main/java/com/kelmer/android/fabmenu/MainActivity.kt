@@ -1,11 +1,7 @@
 package com.kelmer.android.fabmenu
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import androidx.core.content.ContextCompat
-import com.kelmer.android.fabmenu.fab.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,8 +15,20 @@ class MainActivity : AppCompatActivity() {
 //        fab_gooey3.setChecked(true)
 
 
-        fab1.setButtonSize(FloatingActionButton.SIZE_MINI)
-//        fab1.setChecked(true)
+
+        fab1.setOnClickListener {
+            menu_red.showProgressBar()
+        }
+
+        fab2.setOnClickListener {
+            menu_red.hideProgress()
+        }
+
+
+        fab3.setOnClickListener {
+
+        }
+
         menu_red.setClosedOnTouchOutside(true)
         val listener = object : MenuInterface {
             override fun menuOpen() {
@@ -60,7 +68,6 @@ class MainActivity : AppCompatActivity() {
 
         gooey_menu.showProgressBar()
 
-        menu_red.showProgressBar()
 
     }
 }

@@ -6,5 +6,4 @@ interface MenuInterface {
 
     fun menuClose()
 
-    fun menuItemClicked(menuItem: Int)
 }

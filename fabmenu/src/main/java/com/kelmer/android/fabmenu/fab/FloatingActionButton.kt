@@ -87,6 +87,12 @@ class FloatingActionButton @JvmOverloads constructor(
     private var barGrowingFromFront = true
 
 
+    private var shouldUpdateButtonPosition: Boolean = false
+
+    private var originalX = -1f
+    private var originalY = -1f
+    private var buttonPositionSaved: Boolean = false
+
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, 0, 0)
 
@@ -108,7 +114,10 @@ class FloatingActionButton @JvmOverloads constructor(
             getColor(R.color.fab_color_ripple)
         )
 
-        colorReveal = a.getColor(R.styleable.FloatingActionButton_fab_colorReveal, getColor(R.color.fab_reveal_color))
+        colorReveal = a.getColor(
+            R.styleable.FloatingActionButton_fab_colorReveal,
+            getColor(R.color.fab_reveal_color)
+        )
 
         val checked = a.getBoolean(R.styleable.FloatingActionButton_fab_checked, false)
         isChecked = checked
@@ -155,24 +164,23 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
 
-
     private fun getCircleSize(): Int =
         resources.getDimensionPixelSize(if (fabSize == SIZE_NORMAL) R.dimen.fab_size_normal else R.dimen.fab_size_mini)
 
 
     private fun calculateMeasuredWidth(): Int {
         var width = getCircleSize() + calculateShadowWidth()
-        if (progressBarEnabled) {
-            width += progressWidth * 2
-        }
+//        if (progressBarEnabled) {
+//            width += progressWidth * 2
+//        }
         return width
     }
 
     private fun calculateMeasuredHeight(): Int {
         var height = getCircleSize() + calculateShadowHeight()
-        if (progressBarEnabled) {
-            height += progressWidth * 2
-        }
+//        if (progressBarEnabled) {
+//            height += progressWidth * 2
+//        }
         return height
     }
 
@@ -245,12 +253,45 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+//        saveButtonOriginalPosition()
+//
+//        if(shouldUpdateButtonPosition){
+//            updateButtonPosition()
+//            shouldUpdateButtonPosition = false
+//        }
         super.onSizeChanged(w, h, oldw, oldh)
 
         setupProgressBounds()
         setupProgressBarPaints()
         updateBackground()
     }
+//
+//    private fun saveButtonOriginalPosition() {
+//        if (!buttonPositionSaved) {
+//            if (originalX == -1f) {
+//                originalX = x
+//            } else {
+//                originalY = y
+//            }
+//            buttonPositionSaved = true
+//        }
+//
+//    }
+//
+//    private fun updateButtonPosition() {
+//        var x: Float = 0f
+//        var y: Float = 0f
+//
+//        if (progressBarEnabled) {
+//            x = if (originalX > x) x + progressWidth else x - progressWidth
+//            y = if (originalY > y) y + progressWidth else y - progressWidth
+//        } else {
+//            x = originalX
+//            y = originalY
+//        }
+//        setX(x)
+//        setY(y)
+//    }
 
     private fun setupProgressBarPaints() {
         backgroundPaint.color = progressBackgroundColor
@@ -297,12 +338,12 @@ class FloatingActionButton @JvmOverloads constructor(
         var circleInsetVertical: Int =
             if (hasShadow()) (shadowRadius + abs(shadowYOffset)) else 0
 
-
-
-        if (progressBarEnabled) {
-            circleInsetHorizontal += progressWidth
-            circleInsetVertical += progressWidth
-        }
+//
+//
+//        if (progressBarEnabled) {
+//            circleInsetHorizontal += progressWidth
+//            circleInsetVertical += progressWidth
+//        }
 
 
         layerDrawable.setLayerInset(
@@ -706,6 +747,7 @@ class FloatingActionButton @JvmOverloads constructor(
     @Synchronized
     fun showProgressBar() {
         progressBarEnabled = true
+        shouldUpdateButtonPosition = true
         lastTimeAnimated = SystemClock.uptimeMillis()
         setupProgressBounds()
         updateBackground()
@@ -720,12 +762,12 @@ class FloatingActionButton @JvmOverloads constructor(
         this.progressWidth = progressWidth
     }
 
-    fun doReveal(color: Int){
+    fun doReveal(color: Int) {
         currentColor = color
         updateBackground()
     }
 
-    fun undoReveal(){
+    fun undoReveal() {
         currentColor = colorNormal
         updateBackground()
 

@@ -16,5 +16,5 @@ Adds advanced functionalities to FABs
 
 Made possible by
 
-<a href="https://soulpicks.com" target="_blank"><img src="https://avatars0.githubusercontent.com/u/37078572?s=200&v=4" width="64" height="64"></a>
+<a href="https://soulpicks.com" target="_blank"><img src="./art/soulpicks_logo.png" width="64" height="64"></a>
 

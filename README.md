@@ -1,4 +1,6 @@
-# Advanced Floating Action Button
+# FAB menu 💃🏻
+
+## Advanced Floating action button
 
 Adds advanced functionalities to FABs
 

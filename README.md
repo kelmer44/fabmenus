@@ -15,6 +15,9 @@ Adds advanced functionalities to FABs
 
 
 ## Credits
+Very heavily influenced by 
+https://github.com/Clans/FloatingActionButton
+
 
 Made possible by
 

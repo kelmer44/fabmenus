@@ -8,5 +8,6 @@ Adds advanced functionalities to FABs
 * Checkable FABs
 * Progress FABs
 
-
-![Feature demo](https://raw.githubusercontent.com/kelmer44/fabmenus/master/art/demo.gif)
+<p align="center">
+  <img alt="Feature demo" src="./art/demo.gif" width="250" />
+</p>

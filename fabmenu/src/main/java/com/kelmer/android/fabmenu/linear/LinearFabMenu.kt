@@ -416,6 +416,7 @@ open class LinearFabMenu @JvmOverloads constructor(
                 width = max(width, width + floatingActionButton.measuredWidth / 2 + buttonSpacing)
                 height =
                     max(height, height + floatingActionButton.measuredHeight / 2 + buttonSpacing)
+
             }
         }
 
@@ -661,8 +662,8 @@ open class LinearFabMenu @JvmOverloads constructor(
             maxChildHeight = max(maxChildHeight, child.measuredHeight)
         }
 
-
-        return positionMenuButtonForLinear(openUp, top, bottom) - maxChildHeight
+        return (bottom - top - menuButton.measuredHeight)/2
+//        return positionMenuButtonForLinear(openUp, top, bottom) - maxChildHeight
     }
 
     private fun positionMenuButtonForLinear(

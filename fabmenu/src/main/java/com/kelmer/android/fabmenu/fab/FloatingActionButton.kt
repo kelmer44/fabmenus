@@ -330,9 +330,7 @@ class FloatingActionButton @JvmOverloads constructor(
         if (getIconDrawable() != null) {
             iconSize = max(getIconDrawable().intrinsicWidth, getIconDrawable().intrinsicHeight)
         }
-        Log.w("ICONSIZE", "Icon with label $labelText has iconSize = $iconSize")
         val iconOffset = (getCircleSize() - (if (iconSize > 0) iconSize else this.iconSize)) / 2
-        Log.w("ICONSIZE", "Icon with label $labelText has iconOffset = $iconOffset")
         var circleInsetHorizontal: Int =
             if (hasShadow()) (shadowRadius + abs(shadowXOffset)) else 0
         var circleInsetVertical: Int =

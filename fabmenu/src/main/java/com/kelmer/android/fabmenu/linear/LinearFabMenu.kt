@@ -29,6 +29,7 @@ import com.kelmer.android.fabmenu.fab.FloatingActionButton
 import com.kelmer.android.fabmenu.fab.Label
 import kotlin.math.*
 
+
 open class LinearFabMenu @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
@@ -454,7 +455,7 @@ open class LinearFabMenu @JvmOverloads constructor(
         height = maxY - minY
         Log.i("CHILDPOS", " minX=$minX, maxX=$maxX, minY=$minY, maxY=$maxY")
         Log.d("CHILDPOS", "Returning dimension of ${width}, ${height}")
-        return Dimen(width, height)
+        return Dimen(adjustForOvershoot(width), adjustForOvershoot(height))
     }
 
     private fun linearDimension(widthMeasureSpec: Int, heightMeasureSpec: Int): Dimen {
@@ -676,8 +677,8 @@ open class LinearFabMenu @JvmOverloads constructor(
         val childPositions = mutableMapOf<Int, Point>()
 
 
-        var minX = menuButtonX - menuButton.measuredWidth/2
-        var maxX = menuButtonX + menuButton.measuredWidth/2
+        var minX = menuButtonX - menuButton.measuredWidth / 2
+        var maxX = menuButtonX + menuButton.measuredWidth / 2
         var minY = menuButtonY - menuButton.measuredHeight / 2
         var maxY = menuButtonY + menuButton.measuredHeight / 2
         Log.e(
@@ -698,7 +699,7 @@ open class LinearFabMenu @JvmOverloads constructor(
             minX = min(minX, pos.x)
             maxX = max(maxX, pos.x)
             minY = min(minY, pos.y)
-            maxY = max(maxY, pos.y )
+            maxY = max(maxY, pos.y)
 
 
             childPositions[i] = pos
@@ -720,8 +721,8 @@ open class LinearFabMenu @JvmOverloads constructor(
             "LAYOUTCHILD",
             "offsetMaxX=$offsetMaxX, offsetMinX=$offsetMinX, offsetMaxY=$offsetMaxY, offsetMinY=$offsetMinY"
         )
-        val offsetY = offsetMinY
-        val offsetX = offsetMinX
+        val offsetY = (offsetMinY * 1.3).toInt()
+        val offsetX = (offsetMinX * 1.3).toInt()
         Log.v("LAYOUTCHILD", "offsetX=$offsetX, offsetY=$offsetX")
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
@@ -738,10 +739,10 @@ open class LinearFabMenu @JvmOverloads constructor(
         }
 
         menuButton.layout(
-            menuButtonX - menuButton.measuredWidth/2 + offsetX,
-            menuButtonY - menuButton.measuredHeight/2 + offsetY,
-            menuButtonX + menuButton.measuredWidth/2 + offsetX,
-            menuButtonY + menuButton.measuredHeight/2 + offsetY
+            menuButtonX - menuButton.measuredWidth / 2 + offsetX,
+            menuButtonY - menuButton.measuredHeight / 2 + offsetY,
+            menuButtonX + menuButton.measuredWidth / 2 + offsetX,
+            menuButtonY + menuButton.measuredHeight / 2 + offsetY
         )
 
         imageToggle.layout(
@@ -777,7 +778,7 @@ open class LinearFabMenu @JvmOverloads constructor(
         bottom: Int
     ) = if (openUp) bottom - top - menuButton.measuredHeight - paddingBottom else paddingTop
 
-    private fun adjustForOvershoot(dimension: Int): Int = (dimension * 0.03 + dimension).toInt()
+    private fun adjustForOvershoot(dimension: Int): Int = (dimension * 1.1).toInt()
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -889,7 +890,7 @@ open class LinearFabMenu @JvmOverloads constructor(
         }
     }
 
-    private fun isOpened(): Boolean = menuOpened
+    fun isOpened(): Boolean = menuOpened
 
     public fun open(animated: Boolean) {
         if (!isOpened()) {
@@ -1021,6 +1022,7 @@ open class LinearFabMenu @JvmOverloads constructor(
     fun hideProgress() {
         menuButton.hideProgress()
     }
+
 
     companion object {
 

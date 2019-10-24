@@ -409,11 +409,6 @@ open class LinearFabMenu @JvmOverloads constructor(
         val verticalCenter = 0
 
         measureChildWithMargins(menuButton, widthMeasureSpec, 0, heightMeasureSpec, 0)
-        Log.e("CHILDPOS", "----------------------------------------------------------")
-        Log.e(
-            "CHILDPOS",
-            "MenuButton size w=${menuButton.measuredWidth}, h=${menuButton.measuredHeight}"
-        )
 
         var minX: Int = -(menuButton.measuredWidth / 2)
         var maxX: Int = (menuButton.measuredWidth / 2)
@@ -438,11 +433,6 @@ open class LinearFabMenu @JvmOverloads constructor(
                     i
                 )
 
-                Log.w(
-                    "CHILDPOS",
-                    "Child $i (label ${fab.getLabelText()}) pos is ${childPosForRadial.x}, ${childPosForRadial.y}"
-                )
-
 
                 minX = min(minX, childPosForRadial.x - fab.measuredWidth / 2)
                 maxX = max(maxX, childPosForRadial.x + fab.measuredWidth / 2)
@@ -453,8 +443,6 @@ open class LinearFabMenu @JvmOverloads constructor(
 
         width = maxX - minX
         height = maxY - minY
-        Log.i("CHILDPOS", " minX=$minX, maxX=$maxX, minY=$minY, maxY=$maxY")
-        Log.d("CHILDPOS", "Returning dimension of ${width}, ${height}")
         return Dimen(adjustForOvershoot(width), adjustForOvershoot(height))
     }
 
@@ -599,7 +587,6 @@ open class LinearFabMenu @JvmOverloads constructor(
         menuButtonTop + menuButton.measuredHeight / 2
 
 
-        Log.w("RADIALANGLEOFFSET ", "Offset is $angleOffset")
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
 
@@ -681,20 +668,12 @@ open class LinearFabMenu @JvmOverloads constructor(
         var maxX = menuButtonX + menuButton.measuredWidth / 2
         var minY = menuButtonY - menuButton.measuredHeight / 2
         var maxY = menuButtonY + menuButton.measuredHeight / 2
-        Log.e(
-            "LAYOUTCHILD",
-            "Starting values, x=$menuButtonX, y=$menuButtonY, w=${menuButton.measuredWidth},${menuButton.measuredHeight}"
-        )
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
             if (child == imageToggle || child.visibility == View.GONE || child == menuButton) continue
             val fab = child as FloatingActionButton
             val pos = getChildPosForRadial(fab, menuButtonX, menuButtonY, i)
 
-            Log.w(
-                "LAYOUTCHILD",
-                "Child $i (label ${fab.getLabelText()}) pos is ${pos.x}, ${pos.y}, size w=${fab.measuredWidth}, h=${fab.measuredHeight}"
-            )
 
             minX = min(minX, pos.x)
             maxX = max(maxX, pos.x)
@@ -713,17 +692,8 @@ open class LinearFabMenu @JvmOverloads constructor(
 //
         var offsetMaxY = (menuButtonY + measuredHeight / 2) + maxY
         var offsetMinY = (menuButtonY - measuredHeight / 2) - minY
-        Log.d(
-            "LAYOUTCHILD",
-            "minX=${minX}, maxX=${maxX}, minY=$minY, maxY=$maxY"
-        )
-        Log.i(
-            "LAYOUTCHILD",
-            "offsetMaxX=$offsetMaxX, offsetMinX=$offsetMinX, offsetMaxY=$offsetMaxY, offsetMinY=$offsetMinY"
-        )
         val offsetY = (offsetMinY * 1.3).toInt()
         val offsetX = (offsetMinX * 1.3).toInt()
-        Log.v("LAYOUTCHILD", "offsetX=$offsetX, offsetY=$offsetX")
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
             if (child.visibility == View.GONE || child == menuButton || child == imageToggle) continue

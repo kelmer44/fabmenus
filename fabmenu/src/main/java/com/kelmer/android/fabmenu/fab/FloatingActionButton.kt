@@ -10,7 +10,6 @@ import android.graphics.drawable.shapes.Shape
 import android.os.Build
 import android.os.SystemClock
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils

@@ -380,7 +380,10 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
         measureChildWithMargins(imageToggle, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
-
+        Log.i(
+            "MEASUREMENTS",
+            "Image Toggle has a width of ${imageToggle.measuredWidth} and a height of ${imageToggle.measuredHeight}"
+        )
         /**
          * we do one pass to calculate the max width of those buttons so that all adjust to it
          */
@@ -388,6 +391,10 @@ open class AdvancedFabMenu @JvmOverloads constructor(
             val child = getChildAt(i)
             if (child.visibility == View.GONE || child == imageToggle) continue
             measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0)
+            Log.i(
+                "MEASUREMENTS",
+                "Child $i has a width of ${child.measuredWidth} and a height of ${child.measuredHeight} - type is $child"
+            )
             maxButtonWidth = max(maxButtonWidth, child.measuredWidth)
         }
 
@@ -406,11 +413,12 @@ open class AdvancedFabMenu @JvmOverloads constructor(
             height = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
         }
 
-
+        Log.d("MEASUREMENTS", "Total width is $width and height is $height")
         setMeasuredDimension(width, height)
     }
 
     data class Dimen(val width: Int, val height: Int)
+
 
     private fun linearDimension(widthMeasureSpec: Int, heightMeasureSpec: Int): Dimen {
         var width: Int
@@ -636,8 +644,11 @@ open class AdvancedFabMenu @JvmOverloads constructor(
         var maxX: Float = ((menuButton.measuredWidth / 2).toFloat())
         var minY: Float = (-(menuButton.measuredHeight / 2)).toFloat()
         var maxY: Float = ((menuButton.measuredHeight / 2).toFloat())
-
-
+        var maxLabelWidth = 0
+        Log.v(
+            "MEASUREMENTS",
+            "MenuButton has a width of ${menuButton.measuredWidth} and a height of ${menuButton.measuredHeight} - pos is ${menuButton.x}, ${menuButton.y}"
+        )
         for (i in buttonCount downTo 0) {
             val child = getChildAt(i)
             //gone elements or imagetoggle do not count for the total width/height
@@ -645,6 +656,11 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
             val fab = child as? FloatingActionButton
             if (fab != null) {
+                Log.w(
+                    "MEASUREMENTS",
+                    "This child $i has a width of ${fab.measuredWidth} and a height of ${fab.measuredHeight} - is fab? ${fab.getLabelText()}"
+                )
+
                 val childPosForRadial = getChildPosForRadial(
                     fab,
                     buttonsHorizontalCenter,
@@ -653,20 +669,60 @@ open class AdvancedFabMenu @JvmOverloads constructor(
                 )
                 val halfWidthWithOvershoot = fab.measuredWidth / 2 * OVERSHOOT_RATIO
                 val halfHeightWithOvershoot = fab.measuredHeight / 2 * OVERSHOOT_RATIO
+                Log.e(
+                    "MEASUREMENTS",
+                    "Child $i has a pos of ${childPosForRadial.x}, ${childPosForRadial.y}, adjusted size is ${halfWidthWithOvershoot * 2}, ${halfHeightWithOvershoot * 2}"
+                )
                 minX = min(minX, childPosForRadial.x - halfWidthWithOvershoot)
                 maxX = max(maxX, childPosForRadial.x + halfWidthWithOvershoot)
                 minY = min(minY, childPosForRadial.y - halfHeightWithOvershoot)
                 maxY = max(maxY, childPosForRadial.y + halfHeightWithOvershoot)
+                Log.e(
+                    "MEASUREMENTS",
+                    "After child $i x extent is $maxX to $minX (${maxX - minX}), y extent is $maxY to $minY (${maxY - minY})"
+                )
+                val label = fab.getTag(R.id.fab_label) as? Label
+                if (label != null) {
+                    val labelOffset = fab.measuredWidth
+
+                    measureChildWithMargins(
+                        label,
+                        widthMeasureSpec,
+                        0,
+                        heightMeasureSpec,
+                        0
+                    )
+                    Log.i(
+                        "MEASUREMENTS",
+                        "For label $i (${fab.getLabelText()}) width is = ${label.measuredWidth}, height is = ${label.measuredHeight}, labelOffset ended up being = $labelOffset"
+                    )
+                    val labelPosX =
+                        childPosForRadial.x - halfWidthWithOvershoot - labelsMargin - labelOffset - label.measuredWidth
+
+                    minX = min(minX, labelPosX)
+
+                    Log.i(
+                        "MEASUREMENTS",
+                        "For label $i (${fab.getLabelText()}) minimumX will be = $labelPosX, which makes minX = $minX"
+                    )
+
+//                    usedWidth += label.measuredWidth
+//                    maxLabelWidth = max(maxLabelWidth, usedWidth + labelOffset)
+                }
             }
         }
+
+        Log.d("MEASUREMENTS", "---------------------------------------------------")
+
         width = (maxX - minX).roundToInt()
         height = (maxY - minY).roundToInt()
 //        return Dimen(adjustForOvershoot(width), adjustForOvershoot(height))
         return Dimen(width, height)
     }
 
-
     private fun layoutRadial(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        val areLabelsToTheLeft = labelsPosition == LABEL_POSITION_LEFT
+
         //We start off by putting the menu button in the center of the view
         val menuButtonX = (right - left) / 2
         val menuButtonY = (bottom - top) / 2
@@ -677,32 +733,66 @@ open class AdvancedFabMenu @JvmOverloads constructor(
         var maxX = menuButtonX + menuButton.measuredWidth / 2
         var minY = menuButtonY - menuButton.measuredHeight / 2
         var maxY = menuButtonY + menuButton.measuredHeight / 2
+
+        Log.i(
+            "LAYINGOUT",
+            "MenuButton pos is $menuButtonX, $menuButtonY, with w=${menuButton.measuredWidth}"
+        )
+        Log.i("LAYINGOUT", "Initial x is $minX, $maxX; y is $minY, $maxY")
+
+
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
             if (child == imageToggle || child.visibility == View.GONE || child == menuButton) continue
             val fab = child as? FloatingActionButton ?: continue
+
+            Log.d(
+                "LAYINGOUT",
+                "Calculating for layout for Child $i (${fab.getLabelText()}), w=${fab.measuredWidth}"
+            )
+
+            //Get center positions for this children
             val pos = getChildPosForRadial(fab, menuButtonX, menuButtonY, i)
 
-
+            //Calculate half the size of this button taking into account a little extra for the overshoot grow animation
             val halfWidthWithOvershoot = fab.measuredWidth / 2 * OVERSHOOT_RATIO
             val halfHeightWithOvershoot = fab.measuredHeight / 2 * OVERSHOOT_RATIO
 
-
-            val offsetedMinX: Int =
+            //Minimum and maximum positions of this button, center - size/2, center+size/2
+            var offsetedMinX: Int =
                 (pos.x - halfWidthWithOvershoot).roundToInt()
-            val offsetedMaxX =
+            var offsetedMaxX =
                 (pos.x + halfWidthWithOvershoot).roundToInt()
-            val offsetedMinY: Int =
+            var offsetedMinY: Int =
                 (pos.y - halfHeightWithOvershoot).roundToInt()
-            val offsetedMaxY =
+            var offsetedMaxY =
                 (pos.y + halfHeightWithOvershoot).roundToInt()
 
-
+            val label = fab.getTag(R.id.fab_label) as? Label
+            if (label != null) {
+                val labelOffset = fab.measuredWidth
+                val labelPosX: Int =
+                    (pos.x - halfWidthWithOvershoot - labelsMargin - labelOffset - label.measuredWidth).roundToInt()
+                offsetedMinX = min(offsetedMinX, labelPosX)
+            }
 
             minX = min(minX, offsetedMinX)
             maxX = max(maxX, offsetedMaxX)
+            Log.w(
+                "LAYINGOUT",
+                "Pos is ${pos.x}, ${pos.y}, min x will be posx  ${pos.x - offsetedMinX}, max = ${pos.x + offsetedMaxX}"
+            )
             minY = min(minY, offsetedMinY)
             maxY = max(maxY, offsetedMaxY)
+
+            Log.w(
+                "LAYINGOUT",
+                "Pos is ${pos.x}, ${pos.y}, min y will be posy  ${pos.y - offsetedMinY}, max = ${pos.y + offsetedMaxX}"
+            )
+            Log.e(
+                "LAYINGOUT",
+                "New x = $minX, $maxX, new y = $minY, $maxY"
+            )
             childPositions[i] = pos
             if (!isMenuOpening) {
                 fab.hide(false)
@@ -727,13 +817,61 @@ open class AdvancedFabMenu @JvmOverloads constructor(
             val fab = child as FloatingActionButton ?: continue
             val point = childPositions[i]
             if (point != null) {
+
                 fab.layout(
                     point.x - fab.measuredWidth / 2 + offsetX,
                     point.y - fab.measuredHeight / 2 + offsetY,
                     point.x + fab.measuredWidth / 2 + offsetX,
                     point.y + fab.measuredHeight / 2 + offsetY
                 )
+                Log.d(
+                    "LAYINGOUT",
+                    "FAB  ${fab.getLabelText()}, posLeft = ${fab.x}, posRight = ${fab.y}"
+                )
+
+                val label = fab.getTag(R.id.fab_label) as? Label
+                if (label != null) {
+                    val labelsOffset = fab.measuredWidth
+                    val labelXNearButton: Int =
+                        if (areLabelsToTheLeft) (fab.x - labelsOffset).roundToInt() else (fab.x + labelsOffset).roundToInt()
+                    val labelXAwayFromButton: Int  =
+                        if (areLabelsToTheLeft) labelXNearButton - label.measuredWidth else labelXNearButton + label.measuredWidth
+
+                    var labelLeft: Int
+                    var labelRight: Int
+
+                    if (openType == TYPE_LINEAR) {
+                        labelLeft =
+                            if (areLabelsToTheLeft) labelXAwayFromButton else labelXNearButton
+                        labelRight =
+                            if (areLabelsToTheLeft) labelXNearButton else labelXAwayFromButton
+                    } else {
+                        labelLeft =
+                            if (areLabelsToTheLeft) (fab.x - label.measuredWidth - labelsMargin).roundToInt() else (fab.x + fab.measuredWidth + labelsMargin).roundToInt()
+                        labelRight = labelLeft + label.measuredWidth
+                    }
+                    Log.w(
+                        "LAYINGOUT",
+                        "Label  ${label.text}, posLeft = $labelLeft, posRight = $labelRight, offsetX = $offsetX, width is = ${label.measuredWidth}, labelsMargin = $labelsMargin"
+                    )
+                    val labelTop =
+                        point.y - fab.measuredHeight / 2 + labelsVerticalOffset + (fab.measuredHeight - label.measuredHeight) / 2
+
+                    label.layout(
+                        labelLeft,
+                        labelTop ,
+                        labelRight,
+                        labelTop + label.measuredHeight
+                    )
+
+                    if (!isMenuOpening) {
+                        label.visibility = View.INVISIBLE
+                    }
+                }
+
+
             }
+
 
         }
         menuButton.layout(

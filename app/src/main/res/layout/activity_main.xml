@@ -86,6 +86,7 @@
         app:menu_colorRipple="@android:color/holo_red_light"
         app:menu_do_reveal="true"
         app:menu_fab_size="mini"
+        app:menu_button_spacing="0dp"
         app:menu_labels_position="left"
         app:menu_progress_backgroundColor="@android:color/holo_green_dark"
         app:menu_progress_color="@android:color/holo_purple"

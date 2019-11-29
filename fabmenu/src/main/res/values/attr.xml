@@ -55,6 +55,8 @@
         <attr name="menu_progress_backgroundColor" format="color" />
         <attr name="menu_progress_showBackground" format="boolean" />
         <attr name="menu_progress_width" format="dimension" />
+        <attr name="menu_label_margin" format="dimension" />
+        <attr name="menu_button_spacing" format="dimension" />
 
         <attr name="menu_reveal_color" format="color" />
         <attr name="menu_do_reveal" format="boolean" />

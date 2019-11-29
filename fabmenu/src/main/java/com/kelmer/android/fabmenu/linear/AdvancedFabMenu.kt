@@ -80,7 +80,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
     private var openDirection: Int = 0
 
     private var labelsPosition: Int
-    private var labelsMargin = dpToPx(8f).toInt()
+    private var labelsMargin = resources.getDimensionPixelSize(R.dimen.label_margin_default)
     private var labelsVerticalOffset = dpToPx(0f).toInt()
 
     private val labelsStyle: Int
@@ -105,7 +105,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
     private val closeAnimatorSet = AnimatorSet()
 
     private var buttonCount: Int = 0
-    private var buttonSpacing = dpToPx(8f).toInt()
+    private var buttonSpacing = resources.getDimensionPixelSize(R.dimen.button_spacing_default)
 
     private var isAnimated = true
 
@@ -195,7 +195,10 @@ open class AdvancedFabMenu @JvmOverloads constructor(
             resources.getDimension(R.dimen.fab_progress_width)
         ).toInt()
 
-
+        labelsMargin = a.getDimension(R.styleable.AdvancedFabMenu_menu_label_margin, resources.getDimension(R.dimen.label_margin_default))
+            .roundToInt()
+        buttonSpacing = a.getDimension(R.styleable.AdvancedFabMenu_menu_button_spacing, resources.getDimension(R.dimen.button_spacing_default))
+            .roundToInt()
         menuRevealColor = a.getColor(
             R.styleable.AdvancedFabMenu_menu_reveal_color,
             getColor(R.color.fab_reveal_color)

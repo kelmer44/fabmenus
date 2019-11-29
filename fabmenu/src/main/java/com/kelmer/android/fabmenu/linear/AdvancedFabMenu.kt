@@ -837,9 +837,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
                         "LAYINGOUT",
                         "Label  ${label.text}, posLeft = $labelLeft, posRight = $labelRight, offsetX = $offsetX, width is = ${label.measuredWidth}, labelsMargin = $labelsMargin"
                     )
-                    val labelTop =
-                        point.y - fab.measuredHeight / 2 + labelsVerticalOffset + (fab.measuredHeight - label.measuredHeight) / 2
-
+                    val labelTop : Int = (fab.y + fab.measuredHeight /2 -label.measuredHeight/2).roundToInt()
                     label.layout(
                         labelLeft,
                         labelTop,

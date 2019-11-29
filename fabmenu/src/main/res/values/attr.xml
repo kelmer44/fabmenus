@@ -11,7 +11,7 @@
         <attr name="fab_colorPressed" format="color" />
         <attr name="fab_colorDisabled" format="color" />
         <attr name="fab_colorRipple" format="color" />
-        <attr name="fab_colorReveal" format="color"/>
+        <attr name="fab_colorReveal" format="color" />
         <attr name="fab_showShadow" format="boolean" />
         <attr name="fab_shadowColor" format="color" />
         <attr name="fab_checked" format="boolean" />
@@ -19,11 +19,12 @@
         <attr name="fab_progress_color" format="color" />
         <attr name="fab_progress_backgroundColor" format="color" />
         <attr name="fab_progress_showBackground" format="boolean" />
-        <attr name="fab_progress_width" format="dimension"/>
+        <attr name="fab_progress_width" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="LinearFabMenu">
+    <declare-styleable name="AdvancedFabMenu">
         <attr name="menu_showShadow" format="boolean" />
+        <attr name="menu_radial_layoutAngle" format="float" />
         <attr name="menu_radial_angleOffset" format="float" />
         <attr name="menu_labels_showAnimation" format="reference" />
         <attr name="menu_labels_textColor" format="reference|color" />
@@ -52,10 +53,10 @@
         <attr name="menu_progress_color" format="color" />
         <attr name="menu_progress_backgroundColor" format="color" />
         <attr name="menu_progress_showBackground" format="boolean" />
-        <attr name="menu_progress_width" format="dimension"/>
+        <attr name="menu_progress_width" format="dimension" />
 
-        <attr name="menu_reveal_color" format="color"/>
-        <attr name="menu_do_reveal" format="boolean"/>
+        <attr name="menu_reveal_color" format="color" />
+        <attr name="menu_do_reveal" format="boolean" />
         <attr name="menu_openDirection" format="enum">
             <enum name="up" value="0" />
             <enum name="down" value="1" />

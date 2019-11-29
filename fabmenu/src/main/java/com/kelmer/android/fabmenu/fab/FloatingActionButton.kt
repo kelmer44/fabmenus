@@ -164,7 +164,7 @@ class FloatingActionButton @JvmOverloads constructor(
 
 
     private fun getCircleSize(): Int =
-        resources.getDimensionPixelSize(if (fabSize == SIZE_NORMAL) R.dimen.fab_size_normal else R.dimen.fab_size_mini)
+        resources.getDimensionPixelSize(if (fabSize == SIZE_NORMAL) R.dimen.fab_size_normal else if(fabSize== FloatingActionButton.Companion.SIZE_MINI) R.dimen.fab_size_mini else R.dimen.fab_size_tiny)
 
 
     private fun calculateMeasuredWidth(): Int {
@@ -545,6 +545,7 @@ class FloatingActionButton @JvmOverloads constructor(
         val PORTER_DUFF_CLEAR = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         const val SIZE_NORMAL = 0
         const val SIZE_MINI = 1
+        const val SIZE_TINY = 2
         const val PAUSE_GROWING_TIME: Long = 200
         const val BAR_SPIN_CYCLE_TIME = 500f
         const val BAR_MAX_LENGTH = 270

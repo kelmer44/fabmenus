@@ -6,6 +6,7 @@
         <attr name="fab_size" format="enum">
             <enum name="normal" value="0" />
             <enum name="mini" value="1" />
+            <enum name="tiny" value="2" />
         </attr>
         <attr name="fab_colorNormal" format="color" />
         <attr name="fab_colorPressed" format="color" />

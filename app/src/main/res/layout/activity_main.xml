@@ -48,7 +48,7 @@
                 app:fab_colorNormal="@android:color/holo_purple"
                 app:fab_label="Purple"
                 app:fab_showShadow="false"
-                app:fab_size="mini" />
+                app:fab_size="tiny" />
 
             <com.kelmer.android.fabmenu.fab.FloatingActionButton
                 android:id="@+id/fab_radial_mini2"
@@ -59,7 +59,7 @@
                 app:fab_colorNormal="@android:color/holo_green_dark"
                 app:fab_label="Green"
                 app:fab_showShadow="false"
-                app:fab_size="mini" />
+                app:fab_size="tiny" />
 
             <com.kelmer.android.fabmenu.fab.FloatingActionButton
                 android:id="@+id/fab_radial_mini3"
@@ -70,7 +70,7 @@
                 app:fab_colorNormal="@android:color/holo_blue_dark"
                 app:fab_label="Blue"
                 app:fab_showShadow="false"
-                app:fab_size="mini" />
+                app:fab_size="tiny" />
         </com.kelmer.android.fabmenu.linear.AdvancedFabMenu>
 
     <com.kelmer.android.fabmenu.linear.AdvancedFabMenu
@@ -106,7 +106,7 @@
             app:fab_colorNormal="@android:color/holo_purple"
             app:fab_label="Purple"
             app:fab_showShadow="false"
-            app:fab_size="mini" />
+            app:fab_size="tiny" />
 
         <com.kelmer.android.fabmenu.fab.FloatingActionButton
             android:id="@+id/fab_radial2"
@@ -117,7 +117,7 @@
             app:fab_colorNormal="@android:color/holo_green_dark"
             app:fab_label="Green"
             app:fab_showShadow="false"
-            app:fab_size="mini" />
+            app:fab_size="tiny" />
 
         <com.kelmer.android.fabmenu.fab.FloatingActionButton
             android:id="@+id/fab_radial3"
@@ -128,7 +128,7 @@
             app:fab_colorNormal="@android:color/holo_blue_dark"
             app:fab_label="Blue"
             app:fab_showShadow="false"
-            app:fab_size="mini" />
+            app:fab_size="tiny" />
 
 <!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
 <!--            android:id="@+id/fab_radial4"-->

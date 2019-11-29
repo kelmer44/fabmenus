@@ -16,84 +16,82 @@
             app:layout_constraintRight_toLeftOf="@id/radial_menu"
             app:layout_constraintTop_toTopOf="@id/radial_menu" />
 
-<!--        <com.kelmer.android.fabmenu.linear.AdvancedFabMenu-->
-<!--            android:id="@+id/radial_menu_mini"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:visibility="visible"-->
-<!--            app:layout_constraintBottom_toTopOf="@id/radial_menu"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:menu_colorNormal="@android:color/holo_blue_dark"-->
-<!--            app:menu_colorPressed="@android:color/holo_orange_dark"-->
-<!--            app:menu_colorRipple="@android:color/holo_red_light"-->
-<!--            app:menu_do_reveal="true"-->
-<!--            app:menu_fab_size="mini"-->
-<!--            app:menu_progress_backgroundColor="@android:color/holo_green_dark"-->
-<!--            app:menu_progress_color="@android:color/holo_purple"-->
-<!--            app:menu_progress_showBackground="true"-->
-<!--            app:menu_progress_width="4dp"-->
-<!--            app:menu_radial_angleOffset="-20"-->
-<!--            app:menu_showShadow="false"-->
-<!--            app:menu_type="radial">-->
+        <com.kelmer.android.fabmenu.linear.AdvancedFabMenu
+            android:id="@+id/radial_menu_mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/radial_menu"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu_colorNormal="@android:color/holo_blue_dark"
+            app:menu_colorPressed="@android:color/holo_orange_dark"
+            app:menu_colorRipple="@android:color/holo_red_light"
+            app:menu_do_reveal="true"
+            app:menu_fab_size="mini"
+            app:menu_progress_backgroundColor="@android:color/holo_green_dark"
+            app:menu_progress_color="@android:color/holo_purple"
+            app:menu_progress_showBackground="true"
+            app:menu_progress_width="4dp"
+            app:menu_radial_angleOffset="-20"
+            app:menu_showShadow="false"
+            app:menu_type="radial">
 
 
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab_radial_mini1"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_video_selector"-->
-<!--                app:fab_colorNormal="@android:color/holo_purple"-->
-<!--                app:fab_label="Purple"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab_radial_mini1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_video_selector"
+                app:fab_colorNormal="@android:color/holo_purple"
+                app:fab_label="Purple"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
 
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab_radial_mini2"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_edit_selector"-->
-<!--                app:fab_colorNormal="@android:color/holo_green_dark"-->
-<!--                app:fab_label="Green"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab_radial_mini2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_edit_selector"
+                app:fab_colorNormal="@android:color/holo_green_dark"
+                app:fab_label="Green"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
 
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab_radial_mini3"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_bookmark_sateful"-->
-<!--                app:fab_colorNormal="@android:color/holo_blue_dark"-->
-<!--                app:fab_label="Blue"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
-<!--        </com.kelmer.android.fabmenu.linear.AdvancedFabMenu>-->
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab_radial_mini3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_bookmark_sateful"
+                app:fab_colorNormal="@android:color/holo_blue_dark"
+                app:fab_label="Blue"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
+        </com.kelmer.android.fabmenu.linear.AdvancedFabMenu>
 
-<!--    app:layout_constraintBottom_toTopOf="@id/big"-->
     <com.kelmer.android.fabmenu.linear.AdvancedFabMenu
         android:id="@+id/radial_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/big"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radial_menu_mini"
         app:menu_colorNormal="@android:color/holo_blue_dark"
         app:menu_colorPressed="@android:color/holo_orange_dark"
         app:menu_colorRipple="@android:color/holo_red_light"
-        android:background="@android:color/holo_orange_light"
         app:menu_do_reveal="true"
         app:menu_fab_size="mini"
-        app:menu_labels_position="right"
+        app:menu_labels_position="left"
         app:menu_progress_backgroundColor="@android:color/holo_green_dark"
         app:menu_progress_color="@android:color/holo_purple"
         app:menu_progress_showBackground="true"
         app:menu_progress_width="4dp"
-        app:menu_radial_angleOffset="90"
+        app:menu_radial_angleOffset="-90"
         app:menu_radial_layoutAngle="180"
         app:menu_showShadow="false"
         app:menu_type="radial">
@@ -164,268 +162,268 @@
 <!--                    app:fab_size="mini" />-->
     </com.kelmer.android.fabmenu.linear.AdvancedFabMenu>
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="16dp"-->
-<!--            android:text="Normal Size"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/big"-->
-<!--            app:layout_constraintRight_toLeftOf="@id/big"-->
-<!--            app:layout_constraintTop_toTopOf="@id/big" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="Normal Size"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/big"
+            app:layout_constraintRight_toLeftOf="@id/big"
+            app:layout_constraintTop_toTopOf="@id/big" />
 
-<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--            android:id="@+id/big"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:elevation="4dp"-->
-<!--            android:padding="10dp"-->
-<!--            android:src="@drawable/ic_edit_vector"-->
-<!--            app:fab_colorDisabled="@android:color/holo_purple"-->
-<!--            app:fab_colorNormal="@android:color/holo_blue_dark"-->
-<!--            app:fab_colorPressed="@android:color/holo_orange_dark"-->
-<!--            app:fab_colorRipple="@android:color/holo_red_light"-->
-<!--            app:fab_label="My menu"-->
-<!--            app:fab_showShadow="false"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/big"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_edit_vector"
+            app:fab_colorDisabled="@android:color/holo_purple"
+            app:fab_colorNormal="@android:color/holo_blue_dark"
+            app:fab_colorPressed="@android:color/holo_orange_dark"
+            app:fab_colorRipple="@android:color/holo_red_light"
+            app:fab_label="My menu"
+            app:fab_showShadow="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="16dp"-->
-<!--            android:text="Mini Size"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/mini"-->
-<!--            app:layout_constraintRight_toLeftOf="@id/mini"-->
-<!--            app:layout_constraintTop_toTopOf="@id/mini" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="Mini Size"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/mini"
+            app:layout_constraintRight_toLeftOf="@id/mini"
+            app:layout_constraintTop_toTopOf="@id/mini" />
 
-<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--            android:id="@+id/mini"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:elevation="4dp"-->
-<!--            android:padding="10dp"-->
-<!--            android:src="@drawable/ic_bookmark_sateful"-->
-<!--            app:fab_checked="true"-->
-<!--            app:fab_label="My menu"-->
-<!--            app:fab_showShadow="false"-->
-<!--            app:fab_size="mini"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/big" />-->
-
-
-<!--        <TextView-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="16dp"-->
-<!--            android:gravity="right"-->
-<!--            android:lines="2"-->
-<!--            android:maxLines="2"-->
-<!--            android:text="Check to enable Progress bar"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/mini_two"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toLeftOf="@id/mini_two"-->
-<!--            app:layout_constraintTop_toTopOf="@id/mini_two" />-->
-
-<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--            android:id="@+id/mini_two"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:elevation="4dp"-->
-<!--            android:padding="10dp"-->
-<!--            android:src="@drawable/ic_bookmark_sateful"-->
-<!--            app:fab_checked="false"-->
-<!--            app:fab_label="My menu"-->
-<!--            app:fab_showShadow="false"-->
-<!--            app:fab_size="mini"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/mini" />-->
-
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="16dp"-->
-<!--            android:text="Reveal"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/progress_bar"-->
-<!--            app:layout_constraintRight_toLeftOf="@id/progress_bar"-->
-<!--            app:layout_constraintTop_toTopOf="@id/progress_bar" />-->
-
-<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--            android:id="@+id/progress_bar"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:elevation="4dp"-->
-<!--            android:padding="10dp"-->
-<!--            android:src="@drawable/ic_bookmark_sateful"-->
-<!--            app:fab_checked="false"-->
-<!--            app:fab_colorNormal="@android:color/holo_blue_bright"-->
-<!--            app:fab_colorPressed="@android:color/holo_purple"-->
-
-<!--            app:fab_label="My menu"-->
-<!--            app:fab_progress_backgroundColor="@android:color/holo_blue_bright"-->
-<!--            app:fab_progress_color="@android:color/holo_green_light"-->
-<!--            app:fab_progress_showBackground="true"-->
-<!--            app:fab_progress_width="3dp"-->
-<!--            app:fab_showShadow="false"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/mini_two" />-->
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:elevation="4dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_bookmark_sateful"
+            app:fab_checked="true"
+            app:fab_label="My menu"
+            app:fab_showShadow="false"
+            app:fab_size="mini"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/big" />
 
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="16dp"-->
-<!--            android:text="Mini progress"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/progress_bar_mini"-->
-<!--            app:layout_constraintRight_toLeftOf="@id/progress_bar_mini"-->
-<!--            app:layout_constraintTop_toTopOf="@id/progress_bar_mini" />-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:gravity="right"
+            android:lines="2"
+            android:maxLines="2"
+            android:text="Check to enable Progress bar"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/mini_two"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/mini_two"
+            app:layout_constraintTop_toTopOf="@id/mini_two" />
 
-<!--        <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--            android:id="@+id/progress_bar_mini"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:elevation="4dp"-->
-<!--            android:padding="10dp"-->
-<!--            android:src="@drawable/ic_bookmark_sateful"-->
-<!--            app:fab_checked="false"-->
-<!--            app:fab_label="My menu"-->
-<!--            app:fab_progress_backgroundColor="@android:color/holo_blue_bright"-->
-<!--            app:fab_progress_color="@android:color/holo_green_light"-->
-<!--            app:fab_progress_showBackground="true"-->
-<!--            app:fab_progress_width="3dp"-->
-<!--            app:fab_showShadow="false"-->
-<!--            app:fab_size="mini"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/progress_bar" />-->
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/mini_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:elevation="4dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_bookmark_sateful"
+            app:fab_checked="false"
+            app:fab_label="My menu"
+            app:fab_showShadow="false"
+            app:fab_size="mini"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mini" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="Reveal"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/progress_bar"
+            app:layout_constraintRight_toLeftOf="@id/progress_bar"
+            app:layout_constraintTop_toTopOf="@id/progress_bar" />
 
-<!--        <com.kelmer.android.fabmenu.linear.AdvancedFabMenu-->
-<!--            android:id="@+id/menu_green"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:elevation="4dp"-->
-<!--            android:padding="10dp"-->
-<!--            app:menu_backgroundColor="#ddffffff"-->
-<!--            app:menu_colorNormal="@android:color/holo_orange_light"-->
-<!--            app:menu_fab_label="Menu label"-->
-<!--            app:menu_labels_position="right"-->
-<!--            app:menu_radial_angleOffset="90"-->
-<!--            app:menu_showShadow="false"-->
-<!--            app:menu_type="linear">-->
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:elevation="4dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_bookmark_sateful"
+            app:fab_checked="false"
+            app:fab_colorNormal="@android:color/holo_blue_bright"
+            app:fab_colorPressed="@android:color/holo_purple"
 
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab_green1"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_camera_light"-->
-<!--                app:fab_colorNormal="@android:color/holo_purple"-->
-<!--                app:fab_label="Purple"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
-
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab_green2"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_close"-->
-<!--                app:fab_colorNormal="@android:color/holo_green_dark"-->
-<!--                app:fab_label="Green"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
-
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab_green3"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_star"-->
-<!--                app:fab_colorNormal="@android:color/holo_blue_dark"-->
-<!--                app:fab_label="Blue"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
+            app:fab_label="My menu"
+            app:fab_progress_backgroundColor="@android:color/holo_blue_bright"
+            app:fab_progress_color="@android:color/holo_green_light"
+            app:fab_progress_showBackground="true"
+            app:fab_progress_width="3dp"
+            app:fab_showShadow="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mini_two" />
 
 
-<!--        </com.kelmer.android.fabmenu.linear.AdvancedFabMenu>-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="Mini progress"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/progress_bar_mini"
+            app:layout_constraintRight_toLeftOf="@id/progress_bar_mini"
+            app:layout_constraintTop_toTopOf="@id/progress_bar_mini" />
+
+        <com.kelmer.android.fabmenu.fab.FloatingActionButton
+            android:id="@+id/progress_bar_mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:elevation="4dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_bookmark_sateful"
+            app:fab_checked="false"
+            app:fab_label="My menu"
+            app:fab_progress_backgroundColor="@android:color/holo_blue_bright"
+            app:fab_progress_color="@android:color/holo_green_light"
+            app:fab_progress_showBackground="true"
+            app:fab_progress_width="3dp"
+            app:fab_showShadow="false"
+            app:fab_size="mini"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progress_bar" />
 
 
-<!--        <com.kelmer.android.fabmenu.linear.AdvancedFabMenu-->
-<!--            android:id="@+id/menu_red"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:elevation="4dp"-->
-<!--            android:padding="10dp"-->
-<!--            app:menu_backgroundColor="#ddffffff"-->
-<!--            app:menu_do_reveal="true"-->
-<!--            app:menu_labels_position="left"-->
-<!--            app:menu_progress_backgroundColor="@android:color/holo_green_dark"-->
-<!--            app:menu_progress_color="@android:color/holo_purple"-->
-<!--            app:menu_progress_showBackground="true"-->
-<!--            app:menu_progress_width="4dp"-->
-<!--            app:menu_showShadow="false"-->
-<!--            app:menu_type="linear">-->
+        <com.kelmer.android.fabmenu.linear.AdvancedFabMenu
+            android:id="@+id/menu_green"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="4dp"
+            android:padding="10dp"
+            app:menu_backgroundColor="#ddffffff"
+            app:menu_colorNormal="@android:color/holo_orange_light"
+            app:menu_fab_label="Menu label"
+            app:menu_labels_position="right"
+            app:menu_radial_angleOffset="90"
+            app:menu_showShadow="false"
+            app:menu_type="linear">
+
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab_green1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_camera_light"
+                app:fab_colorNormal="@android:color/holo_purple"
+                app:fab_label="Purple"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
+
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab_green2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_close"
+                app:fab_colorNormal="@android:color/holo_green_dark"
+                app:fab_label="Green"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
+
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab_green3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_star"
+                app:fab_colorNormal="@android:color/holo_blue_dark"
+                app:fab_label="Blue"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
 
 
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab1"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_bookmark_sateful"-->
-<!--                app:fab_label="Activate progress bar"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini"-->
-<!--                tools:visibility="visible" />-->
+        </com.kelmer.android.fabmenu.linear.AdvancedFabMenu>
 
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab2"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_close"-->
-<!--                app:fab_colorNormal="@android:color/holo_green_dark"-->
-<!--                app:fab_label="Disable progress bar"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
 
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab3"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_video_selector"-->
-<!--                app:fab_colorNormal="@android:color/holo_blue_dark"-->
-<!--                app:fab_label="Checkable"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
+        <com.kelmer.android.fabmenu.linear.AdvancedFabMenu
+            android:id="@+id/menu_red"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="4dp"
+            android:padding="10dp"
+            app:menu_backgroundColor="#ddffffff"
+            app:menu_do_reveal="true"
+            app:menu_labels_position="left"
+            app:menu_progress_backgroundColor="@android:color/holo_green_dark"
+            app:menu_progress_color="@android:color/holo_purple"
+            app:menu_progress_showBackground="true"
+            app:menu_progress_width="4dp"
+            app:menu_showShadow="false"
+            app:menu_type="linear">
 
-<!--            <com.kelmer.android.fabmenu.fab.FloatingActionButton-->
-<!--                android:id="@+id/fab4"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:elevation="4dp"-->
-<!--                android:src="@drawable/ic_camera_light"-->
-<!--                app:fab_colorNormal="@android:color/holo_blue_dark"-->
-<!--                app:fab_label="Fourth"-->
-<!--                app:fab_showShadow="false"-->
-<!--                app:fab_size="mini" />-->
 
-<!--        </com.kelmer.android.fabmenu.linear.AdvancedFabMenu>-->
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_bookmark_sateful"
+                app:fab_label="Activate progress bar"
+                app:fab_showShadow="false"
+                app:fab_size="mini"
+                tools:visibility="visible" />
+
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_close"
+                app:fab_colorNormal="@android:color/holo_green_dark"
+                app:fab_label="Disable progress bar"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
+
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_video_selector"
+                app:fab_colorNormal="@android:color/holo_blue_dark"
+                app:fab_label="Checkable"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
+
+            <com.kelmer.android.fabmenu.fab.FloatingActionButton
+                android:id="@+id/fab4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:src="@drawable/ic_camera_light"
+                app:fab_colorNormal="@android:color/holo_blue_dark"
+                app:fab_label="Fourth"
+                app:fab_showShadow="false"
+                app:fab_size="mini" />
+
+        </com.kelmer.android.fabmenu.linear.AdvancedFabMenu>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

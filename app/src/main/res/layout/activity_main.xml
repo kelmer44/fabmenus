@@ -93,7 +93,7 @@
         app:menu_progress_color="@android:color/holo_purple"
         app:menu_progress_showBackground="true"
         app:menu_progress_width="4dp"
-        app:menu_radial_angleOffset="-90"
+        app:menu_radial_angleOffset="90"
         app:menu_radial_layoutAngle="180"
         app:menu_showShadow="false"
         app:menu_type="radial">

@@ -648,7 +648,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
             "MEASUREMENTS",
             "MenuButton has a width of ${menuButton.measuredWidth} and a height of ${menuButton.measuredHeight} - pos is ${menuButton.x}, ${menuButton.y}"
         )
-        for (i in buttonCount downTo 0) {
+        for (i in buttonCount-1 downTo 0) {
             val child = getChildAt(i)
             //gone elements or imagetoggle do not count for the total width/height
             if (child.visibility == View.GONE || child == imageToggle || child == menuButton) continue

@@ -640,11 +640,10 @@ open class AdvancedFabMenu @JvmOverloads constructor(
         val buttonsHorizontalCenter = 0
         val verticalCenter = 0
 
-        var minX: Float = (-(menuButton.measuredWidth / 2)).toFloat()
-        var maxX: Float = ((menuButton.measuredWidth / 2).toFloat())
-        var minY: Float = (-(menuButton.measuredHeight / 2)).toFloat()
-        var maxY: Float = ((menuButton.measuredHeight / 2).toFloat())
-        var maxLabelWidth = 0
+        var minX: Float = -menuButton.measuredWidth / 2f
+        var maxX: Float = menuButton.measuredWidth / 2f
+        var minY: Float = -menuButton.measuredHeight / 2f
+        var maxY: Float = menuButton.measuredHeight / 2f
         Log.v(
             "MEASUREMENTS",
             "MenuButton has a width of ${menuButton.measuredWidth} and a height of ${menuButton.measuredHeight} - pos is ${menuButton.x}, ${menuButton.y}"
@@ -683,8 +682,6 @@ open class AdvancedFabMenu @JvmOverloads constructor(
                 )
                 val label = fab.getTag(R.id.fab_label) as? Label
                 if (label != null) {
-                    val labelOffset = fab.measuredWidth
-
                     measureChildWithMargins(
                         label,
                         widthMeasureSpec,
@@ -692,22 +689,21 @@ open class AdvancedFabMenu @JvmOverloads constructor(
                         heightMeasureSpec,
                         0
                     )
+                    val labelOffset = fab.measuredWidth
                     Log.i(
                         "MEASUREMENTS",
                         "For label $i (${fab.getLabelText()}) width is = ${label.measuredWidth}, height is = ${label.measuredHeight}, labelOffset ended up being = $labelOffset"
                     )
-                    val labelPosX =
-                        childPosForRadial.x - halfWidthWithOvershoot - labelsMargin - labelOffset - label.measuredWidth
-
-                    minX = min(minX, labelPosX)
+                    val minimumXforFAB = childPosForRadial.x - halfWidthWithOvershoot
+                    val labelXNearButton: Float = minimumXforFAB - label.measuredWidth - labelsMargin
+                    val labelXAwayFromButton: Float = labelXNearButton + label.measuredWidth
+                    minX = min(minX, labelXNearButton)
+//                    maxX = max(maxX, labelXAwayFromButton)
 
                     Log.i(
                         "MEASUREMENTS",
-                        "For label $i (${fab.getLabelText()}) minimumX will be = $labelPosX, which makes minX = $minX"
+                        "For label $i (${fab.getLabelText()}) minimumX will be = $labelXNearButton, which makes minX = $minX"
                     )
-
-//                    usedWidth += label.measuredWidth
-//                    maxLabelWidth = max(maxLabelWidth, usedWidth + labelOffset)
                 }
             }
         }
@@ -716,7 +712,6 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
         width = (maxX - minX).roundToInt()
         height = (maxY - minY).roundToInt()
-//        return Dimen(adjustForOvershoot(width), adjustForOvershoot(height))
         return Dimen(width, height)
     }
 
@@ -772,7 +767,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
             if (label != null) {
                 val labelOffset = fab.measuredWidth
                 val labelPosX: Int =
-                    (pos.x - halfWidthWithOvershoot - labelsMargin - labelOffset - label.measuredWidth).roundToInt()
+                    (pos.x - halfWidthWithOvershoot - label.measuredWidth - labelsMargin).roundToInt()
                 offsetedMinX = min(offsetedMinX, labelPosX)
             }
 
@@ -809,8 +804,9 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
         var offsetY = (offsetMinY)
         var offsetX = (offsetMinX)
-//        offsetY = 0
-//        offsetX = 0
+
+
+
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
             if (child.visibility == View.GONE || child == menuButton || child == imageToggle) continue
@@ -832,24 +828,11 @@ open class AdvancedFabMenu @JvmOverloads constructor(
                 val label = fab.getTag(R.id.fab_label) as? Label
                 if (label != null) {
                     val labelsOffset = fab.measuredWidth
-                    val labelXNearButton: Int =
-                        if (areLabelsToTheLeft) (fab.x - labelsOffset).roundToInt() else (fab.x + labelsOffset).roundToInt()
-                    val labelXAwayFromButton: Int  =
-                        if (areLabelsToTheLeft) labelXNearButton - label.measuredWidth else labelXNearButton + label.measuredWidth
+                    val labelXNearButton: Int = (fab.x).roundToInt()
+                    val labelXAwayFromButton: Int = labelXNearButton - label.measuredWidth - labelsMargin
+                    var labelLeft : Int = (fab.x - label.measuredWidth - labelsMargin).roundToInt()
+                    var labelRight : Int = labelLeft + label.measuredWidth
 
-                    var labelLeft: Int
-                    var labelRight: Int
-
-                    if (openType == TYPE_LINEAR) {
-                        labelLeft =
-                            if (areLabelsToTheLeft) labelXAwayFromButton else labelXNearButton
-                        labelRight =
-                            if (areLabelsToTheLeft) labelXNearButton else labelXAwayFromButton
-                    } else {
-                        labelLeft =
-                            if (areLabelsToTheLeft) (fab.x - label.measuredWidth - labelsMargin).roundToInt() else (fab.x + fab.measuredWidth + labelsMargin).roundToInt()
-                        labelRight = labelLeft + label.measuredWidth
-                    }
                     Log.w(
                         "LAYINGOUT",
                         "Label  ${label.text}, posLeft = $labelLeft, posRight = $labelRight, offsetX = $offsetX, width is = ${label.measuredWidth}, labelsMargin = $labelsMargin"
@@ -859,7 +842,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
                     label.layout(
                         labelLeft,
-                        labelTop ,
+                        labelTop,
                         labelRight,
                         labelTop + label.measuredHeight
                     )

@@ -1060,9 +1060,9 @@ open class AdvancedFabMenu @JvmOverloads constructor(
                 }
             }
 
+            toggleListener?.menuOpen()
             mUiHandler.postDelayed({
                 menuOpened = true
-                toggleListener?.menuOpen()
 
             }, ++counter * animationDelayPerItem)
 

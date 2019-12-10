@@ -100,6 +100,8 @@ open class AdvancedFabMenu @JvmOverloads constructor(
     private var labelsPaddingBottom = dpToPx(4f).toInt()
     private var labelsPaddingLeft = dpToPx(8f).toInt()
 
+    private var menuElevation : Float = dpToPx(4f)
+
 
     private val openAnimatorSet = AnimatorSet()
     private val closeAnimatorSet = AnimatorSet()
@@ -111,7 +113,6 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
 
     private var closeOnTouchOutside: Boolean = true
-
     private var bgColor: Int
 
 
@@ -146,6 +147,9 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.AdvancedFabMenu, 0, 0)
 
+
+        clipChildren = false
+        clipToPadding = false
 
         labelsPosition =
             a.getInt(R.styleable.AdvancedFabMenu_menu_labels_position, LABEL_POSITION_LEFT)
@@ -204,6 +208,9 @@ open class AdvancedFabMenu @JvmOverloads constructor(
             getColor(R.color.fab_reveal_color)
         )
         showReveal = a.getBoolean(R.styleable.AdvancedFabMenu_menu_do_reveal, false)
+
+
+        menuElevation = a.getDimension(R.styleable.AdvancedFabMenu_menu_elevation, resources.getDimension(R.dimen.fab_default_elevation))
 
         menuShowShadow = a.getBoolean(R.styleable.AdvancedFabMenu_menu_showShadow, true)
         menuShadowColor = a.getColor(
@@ -322,9 +329,12 @@ open class AdvancedFabMenu @JvmOverloads constructor(
         menuButton.setProgressWidth(progressWidth)
         menuButton.setShowProgressBackground(showProgressBackground)
 
+        menuButton.elevation = menuElevation
+
 
         //Menu button is actually two views, a FAB and an image on top
         imageToggle = ImageView(context)
+        imageToggle.elevation = menuElevation
         imageToggle.setImageDrawable(icon)
 
         addView(menuButton, generateDefaultLayoutParams())

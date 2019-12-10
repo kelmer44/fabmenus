@@ -70,5 +70,6 @@
         </attr>
         <attr name="menu_backgroundColor" format="color" />
         <attr name="menu_fab_label" format="string" />
+        <attr name="menu_elevation" format="dimension"/>
     </declare-styleable>
 </resources>

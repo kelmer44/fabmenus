@@ -12,5 +12,6 @@
     <dimen name="button_spacing_default">8dp</dimen>
     <dimen name="labels_text_size">14sp</dimen>
     <dimen name="fab_progress_width">6dp</dimen>
+    <dimen name="fab_default_elevation">4dp</dimen>
 
 </resources>

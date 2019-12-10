@@ -25,6 +25,7 @@ import com.kelmer.android.fabmenu.Util.getColor
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 class FloatingActionButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -168,18 +169,12 @@ class FloatingActionButton @JvmOverloads constructor(
 
 
     private fun calculateMeasuredWidth(): Int {
-        var width = getCircleSize() + calculateShadowWidth()
-//        if (progressBarEnabled) {
-//            width += progressWidth * 2
-//        }
+        var width :Int = (getCircleSize() + calculateShadowWidth() + 1.2f).roundToInt()
         return width
     }
 
     private fun calculateMeasuredHeight(): Int {
-        var height = getCircleSize() + calculateShadowHeight()
-//        if (progressBarEnabled) {
-//            height += progressWidth * 2
-//        }
+        var height :Int= (getCircleSize() + calculateShadowHeight() + 1.2f).roundToInt()
         return height
     }
 

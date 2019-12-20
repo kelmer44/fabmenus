@@ -3,15 +3,19 @@ package com.kelmer.android.fabmenu
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
 
-    private var revealed : Boolean = false
+    private var revealed: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+
 
 
         fab1.setOnClickListener {
@@ -42,10 +46,9 @@ class MainActivity : AppCompatActivity() {
         menu_red.toggleListener = listener
         progress_bar_mini.showProgressBar()
         progress_bar.setOnClickListener {
-            if(!revealed) {
+            if (!revealed) {
                 progress_bar.doReveal(resources.getColor(R.color.fab_reveal_color))
-            }
-            else {
+            } else {
                 progress_bar.undoReveal()
             }
             revealed = !revealed
@@ -74,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         fab_radial1.setOnClickListener {
             radial_menu.showProgressBar()
+
         }
 
         fab_radial2.setOnClickListener {
@@ -82,6 +86,11 @@ class MainActivity : AppCompatActivity() {
 
         fab_radial3.setOnClickListener {
             fab_radial3.isChecked = !fab_radial3.isChecked
+            val drawable =
+                ContextCompat.getDrawable(applicationContext, R.drawable.ic_bookmark_active)
+            if (drawable != null) {
+                radial_menu.setIcon(drawable)
+            }
         }
     }
 }

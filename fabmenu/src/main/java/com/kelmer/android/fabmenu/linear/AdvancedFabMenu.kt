@@ -251,6 +251,8 @@ open class AdvancedFabMenu @JvmOverloads constructor(
         openType = a.getInt(R.styleable.AdvancedFabMenu_menu_type, TYPE_LINEAR)
         bgColor = a.getColor(R.styleable.AdvancedFabMenu_menu_backgroundColor, Color.TRANSPARENT)
 
+        iconAnimated = a.getBoolean(R.styleable.AdvancedFabMenu_menu_anim_button, true)
+
         layoutAngle =
             (a.getFloat(
                 R.styleable.AdvancedFabMenu_menu_radial_layoutAngle,
@@ -341,6 +343,14 @@ open class AdvancedFabMenu @JvmOverloads constructor(
         addView(imageToggle)
 
         createDefaultIconAnimation()
+
+    }
+
+
+    fun setIcon(drawable: Drawable){
+        imageToggle.setImageDrawable(drawable)
+        imageToggle.invalidate()
+        invalidate()
 
     }
 

@@ -84,7 +84,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
     private var labelsVerticalOffset = dpToPx(0f).toInt()
 
     private val labelsStyle: Int
-    private val labelsContext: Context
+    private val labelsContext: androidx.appcompat.view.ContextThemeWrapper
     private val labelsShowAnimation: Int
     private val labelsHideAnimation: Int
     private var labelsShowShadow: Boolean = false
@@ -273,7 +273,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
         }
 
 
-        labelsContext = ContextThemeWrapper(context, labelsStyle)
+        labelsContext = androidx.appcompat.view.ContextThemeWrapper(context, labelsStyle)
 
         initBackgroundDimAnimation()
         createMenuButton()

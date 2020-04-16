@@ -20,6 +20,7 @@ import android.view.animation.*
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import com.kelmer.android.fabmenu.MenuInterface
 import com.kelmer.android.fabmenu.R
@@ -539,13 +540,11 @@ open class AdvancedFabMenu @JvmOverloads constructor(
     ): Point {
 
         //Count items that are FABs and substract 1 (because of the main menu)
-        val submenuItems = children.filter { it is FloatingActionButton }.count() - 1
+        val submenuItems = children.filter { it is FloatingActionButton && it.visibility != View.GONE }.count() - 1
 
 
         val circleRadius = getCircleRadius()
         val angle = ((layoutAngle / (submenuItems - 1)) * (itemPos)) + angleOffset
-
-        val degAngle = angle * 180 / Math.PI
 
 
         val childX =
@@ -672,10 +671,18 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 //            "MEASUREMENTS",
 //            "MenuButton has a width of ${menuButton.measuredWidth} and a height of ${menuButton.measuredHeight} - pos is ${menuButton.x}, ${menuButton.y}"
 //        )
+
+        var hidden = 0
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)
             //gone elements or imagetoggle do not count for the total width/height
-            if (child.visibility == View.GONE || child == imageToggle || child == menuButton) continue
+            if (child.visibility == View.GONE || child == imageToggle || child == menuButton) {
+                continue
+            }
+            if(child.visibility == View.GONE) {
+                hidden++
+                continue
+            }
 
             val fab = child as? FloatingActionButton
             if (fab != null) {
@@ -688,7 +695,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
                     fab,
                     buttonsHorizontalCenter,
                     verticalCenter,
-                    i
+                    i - hidden
                 )
                 val halfWidthWithOvershoot = fab.measuredWidth / 2 * OVERSHOOT_RATIO
                 val halfHeightWithOvershoot = fab.measuredHeight / 2 * OVERSHOOT_RATIO
@@ -761,7 +768,6 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 //            "MenuButton pos is $menuButtonX, $menuButtonY, with w=${menuButton.measuredWidth}"
 //        )
 //        Log.i("LAYINGOUT", "Initial x is $minX, $maxX; y is $minY, $maxY")
-
 
         for (i in buttonCount - 1 downTo 0) {
             val child = getChildAt(i)

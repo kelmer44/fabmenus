@@ -10,9 +10,7 @@ import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
-import android.view.ContextThemeWrapper
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +18,6 @@ import android.view.animation.*
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import com.kelmer.android.fabmenu.MenuInterface
 import com.kelmer.android.fabmenu.R
@@ -44,7 +41,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
     lateinit var menuButtonShowAnimation: Animation
     lateinit var menuButtonHideAnimation: Animation
     lateinit var imageToggleShowAnimation: Animation
-    lateinit var imageToggleHideAnmation: Animation
+    lateinit var imageToggleHideAnimation: Animation
 
 
     private var menuShowShadow: Boolean = false
@@ -288,7 +285,7 @@ open class AdvancedFabMenu @JvmOverloads constructor(
         imageToggleShowAnimation = AnimationUtils.loadAnimation(context, R.anim.fab_scale_up)
 
         setHideAnimation(AnimationUtils.loadAnimation(context, R.anim.fab_scale_down))
-        imageToggleHideAnmation = AnimationUtils.loadAnimation(context, R.anim.fab_scale_down)
+        imageToggleHideAnimation = AnimationUtils.loadAnimation(context, R.anim.fab_scale_down)
     }
 
     private fun initBackgroundDimAnimation() {
@@ -832,14 +829,14 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
 
         var offsetMaxX = (menuButtonX + measuredWidth / 2) + maxX
-        var offsetMinX = (menuButtonX - measuredWidth / 2) - minX
+        val offsetMinX = (menuButtonX - measuredWidth / 2) - minX
 
         var offsetMaxY = (menuButtonY + measuredHeight / 2) + maxY
-        var offsetMinY = (menuButtonY - measuredHeight / 2) - minY
+        val offsetMinY = (menuButtonY - measuredHeight / 2) - minY
 
 
-        var offsetY = (offsetMinY)
-        var offsetX = (offsetMinX)
+        val offsetY = (offsetMinY)
+        val offsetX = (offsetMinX)
 
 
 
@@ -863,12 +860,12 @@ open class AdvancedFabMenu @JvmOverloads constructor(
 
                 val label = fab.getTag(R.id.fab_label) as? Label
                 if (label != null) {
-                    var labelLeft: Int = if (areLabelsToTheLeft) {
+                    val labelLeft: Int = if (areLabelsToTheLeft) {
                         (fab.x - label.measuredWidth - labelsMargin).roundToInt()
                     } else {
                         (fab.x + fab.measuredWidth + labelsMargin).roundToInt()
                     }
-                    var labelRight: Int = labelLeft + label.measuredWidth
+                    val labelRight: Int = labelLeft + label.measuredWidth
 
 //                    Log.w(
 //                        "LAYINGOUT",

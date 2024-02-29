@@ -4,93 +4,100 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.*
+import com.kelmer.android.fabmenu.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
-
+    
     private var revealed: Boolean = false
+    
+    private val binding : ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
+    
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
 
-
-
-
-
-        fab1.setOnClickListener {
-            menu_red.showProgressBar()
-        }
-
-        fab2.setOnClickListener {
-            menu_red.hideProgress()
-        }
-
-
-        fab3.setOnClickListener {
-
-        }
-
-        menu_red.setClosedOnTouchOutside(true)
-        val listener = object : MenuInterface {
-            override fun menuOpen() {
-                Toast.makeText(applicationContext, "Menu opened!", Toast.LENGTH_LONG).show()
+        binding.apply {
+            fab1.setOnClickListener {
+                menuRed.showProgressBar()
             }
 
-            override fun menuClose() {
-                Toast.makeText(applicationContext, "Menu closed!", Toast.LENGTH_LONG).show()
+            fab2.setOnClickListener {
+                menuRed.hideProgress()
             }
 
 
-        }
-        menu_red.toggleListener = listener
-        progress_bar_mini.showProgressBar()
-        progress_bar.setOnClickListener {
-            if (!revealed) {
-                progress_bar.doReveal(resources.getColor(R.color.fab_reveal_color))
-            } else {
-                progress_bar.undoReveal()
+            fab3.setOnClickListener {
+
             }
-            revealed = !revealed
-        }
-        progress_bar_mini.setOnClickListener {
-            progress_bar.undoReveal()
-        }
 
-        mini.setOnClickListener {
-            progress_bar.hideProgress()
-        }
+            menuRed.setClosedOnTouchOutside(true)
+            val listener = object : MenuInterface {
+                override fun menuOpen() {
+                    Toast.makeText(applicationContext, "Menu opened!", Toast.LENGTH_LONG).show()
+                }
 
-        mini_two.setOnClickListener {
-            if (mini_two.isChecked) {
-                progress_bar.hideProgress()
-            } else {
-                progress_bar.showProgressBar()
+                override fun menuClose() {
+                    Toast.makeText(applicationContext, "Menu closed!", Toast.LENGTH_LONG).show()
+                }
+
+
             }
-            mini_two.isChecked = !mini_two.isChecked
-        }
+            menuRed.toggleListener = listener
+            progressBarMini.showProgressBar()
+            progressBar.setOnClickListener {
+                if (!revealed) {
+                    progressBar.doReveal(resources.getColor(R.color.fab_reveal_color))
+                } else {
+                    progressBar.undoReveal()
+                }
+                revealed = !revealed
+            }
+            progressBarMini.setOnClickListener {
+                progressBar.undoReveal()
+            }
+
+            mini.setOnClickListener {
+                progressBar.hideProgress()
+            }
+
+            miniTwo.setOnClickListener {
+                if (miniTwo.isChecked) {
+                    progressBar.hideProgress()
+                } else {
+                    progressBar.showProgressBar()
+                }
+                miniTwo.isChecked = !miniTwo.isChecked
+            }
 
 
-        fab3.setOnClickListener {
-            fab3.isChecked = !fab3.isChecked
-        }
+            fab3.setOnClickListener {
+                fab3.isChecked = !fab3.isChecked
+            }
 
-        fab_radial1.setOnClickListener {
-            radial_menu.showProgressBar()
+            fabRadial1.setOnClickListener {
+                radialMenu.showProgressBar()
 
-        }
+            }
 
-        fab_radial2.setOnClickListener {
-            radial_menu.hideProgress()
-        }
+            fabRadial2.setOnClickListener {
+                radialMenu.hideProgress()
+            }
 
-        fab_radial3.setOnClickListener {
-            fab_radial3.isChecked = !fab_radial3.isChecked
-            val drawable =
-                ContextCompat.getDrawable(applicationContext, R.drawable.ic_bookmark_active)
-            if (drawable != null) {
-                radial_menu.setIcon(drawable)
+            fabRadial3.setOnClickListener {
+                fabRadial3.isChecked = !fabRadial3.isChecked
+                val drawable =
+                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_bookmark_active)
+                if (drawable != null) {
+                    radialMenu.setIcon(drawable)
+                }
             }
         }
+
+
+
+
     }
 }

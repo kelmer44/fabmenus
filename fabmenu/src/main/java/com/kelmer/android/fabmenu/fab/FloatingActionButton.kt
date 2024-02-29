@@ -14,8 +14,8 @@ import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Checkable
-import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.kelmer.android.fabmenu.R
@@ -29,8 +29,7 @@ import kotlin.math.roundToInt
 
 class FloatingActionButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : ImageButton(context, attrs, defStyleAttr), Checkable {
-
+) : AppCompatImageButton(context, attrs, defStyleAttr), Checkable {
 
     var fabSize: Int
 
@@ -61,7 +60,7 @@ class FloatingActionButton @JvmOverloads constructor(
     private var bgDrawable: Drawable? = null
     private var labelText: String = ""
 
-    private var clickListener: View.OnClickListener? = null
+    private var clickListener: OnClickListener? = null
 
 
     // Progress
@@ -131,7 +130,7 @@ class FloatingActionButton @JvmOverloads constructor(
 
         fabSize = a.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL)
 
-        var text = a.getString(R.styleable.FloatingActionButton_fab_label)
+        val text = a.getString(R.styleable.FloatingActionButton_fab_label)
         if (!text.isNullOrBlank()) {
             labelText = text
         }
@@ -174,8 +173,7 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     private fun calculateMeasuredHeight(): Int {
-        var height :Int= (getCircleSize() + calculateShadowHeight() + 1.2f).roundToInt()
-        return height
+        return (getCircleSize() + calculateShadowHeight() + 1.2f).roundToInt()
     }
 
 
@@ -313,21 +311,19 @@ class FloatingActionButton @JvmOverloads constructor(
 
     fun updateBackground() {
         val layerDrawable = if (hasShadow()) {
-            LayerDrawable(arrayOf<Drawable>(Shadow(), createFillDrawable(), getIconDrawable()))
+            LayerDrawable(arrayOf(Shadow(), createFillDrawable(), getIconDrawable()))
         } else {
-            LayerDrawable(arrayOf<Drawable>(createFillDrawable(), getIconDrawable()))
+            LayerDrawable(arrayOf(createFillDrawable(), getIconDrawable()))
         }
 
 
         var iconSize = -1
 
-        if (getIconDrawable() != null) {
-            iconSize = max(getIconDrawable().intrinsicWidth, getIconDrawable().intrinsicHeight)
-        }
+        iconSize = max(getIconDrawable().intrinsicWidth, getIconDrawable().intrinsicHeight)
         val iconOffset = (getCircleSize() - (if (iconSize > 0) iconSize else this.iconSize)) / 2
-        var circleInsetHorizontal: Int =
+        val circleInsetHorizontal: Int =
             if (hasShadow()) (shadowRadius + abs(shadowXOffset)) else 0
-        var circleInsetVertical: Int =
+        val circleInsetVertical: Int =
             if (hasShadow()) (shadowRadius + abs(shadowYOffset)) else 0
 
 //
@@ -353,7 +349,6 @@ class FloatingActionButton @JvmOverloads constructor(
     private fun getIconDrawable(): Drawable = icon ?: ColorDrawable(Color.TRANSPARENT)
 
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun createFillDrawable(): Drawable {
         val drawable = StateListDrawable()
         drawable.addState(
@@ -368,7 +363,7 @@ class FloatingActionButton @JvmOverloads constructor(
         drawable.addState(intArrayOf(), createCircleDrawable(currentColor))
 
         if (Util.isLollipop()) {
-            val ripple: RippleDrawable = RippleDrawable(
+            val ripple = RippleDrawable(
                 ColorStateList(
                     arrayOf(intArrayOf()),
                     intArrayOf(colorRipple)
@@ -396,10 +391,9 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     @Suppress("DEPRECATION")
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun setBackgroundCompat(drawable: Drawable) {
         if (Util.isJellyBean()) {
-            setBackground(drawable)
+            background = drawable
         } else {
             setBackgroundDrawable(drawable)
         }
@@ -422,7 +416,7 @@ class FloatingActionButton @JvmOverloads constructor(
         startAnimation(showAnimation)
     }
 
-    fun playHideAnimation() {
+    private fun playHideAnimation() {
         showAnimation.cancel()
         startAnimation(hideAnimation)
     }
@@ -438,7 +432,6 @@ class FloatingActionButton @JvmOverloads constructor(
         this.colorRipple = colorRipple
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun onActionDown() {
 
         if (bgDrawable is StateListDrawable) {
@@ -459,7 +452,6 @@ class FloatingActionButton @JvmOverloads constructor(
 
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun onActionUp() {
         if (bgDrawable is StateListDrawable) {
             val drawable = bgDrawable as StateListDrawable
@@ -515,14 +507,14 @@ class FloatingActionButton @JvmOverloads constructor(
     private val gestureDetector =
         object : GestureDetector(context, object : SimpleOnGestureListener() {
 
-            override fun onDown(e: MotionEvent?): Boolean {
+            override fun onDown(e: MotionEvent): Boolean {
                 val label = getTag(R.id.fab_label) as? Label
                 label?.onActionDown()
                 onActionDown()
                 return super.onDown(e)
             }
 
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
                 val label = getTag(R.id.fab_label) as? Label
                 label?.onActionUp()
                 onActionUp()

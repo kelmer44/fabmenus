@@ -13,13 +13,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.animation.Animation
-import android.widget.TextView
 import com.kelmer.android.fabmenu.Util
 import kotlin.math.abs
 
 class Label @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : TextView(context, attrs, defStyleAttr) {
+) : androidx.appcompat.widget.AppCompatTextView(context, attrs, defStyleAttr) {
 
     private val PORTER_DUFF_CLEAR = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
 
@@ -93,7 +92,6 @@ class Label @JvmOverloads constructor(
         setBackgroundCompat(layerDrawable)
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun createFillDrawable(): Drawable {
         val drawable = StateListDrawable()
         drawable.addState(
@@ -144,13 +142,12 @@ class Label @JvmOverloads constructor(
 
     private fun setShadow(fab: FloatingActionButton) {
         mShadowColor = fab.shadowColor
-        shadowRadius = fab.shadowRadius.toInt()
-        shadowXOffset = fab.shadowXOffset.toInt()
-        shadowYOffset = fab.shadowYOffset.toInt()
+        shadowRadius = fab.shadowRadius
+        shadowXOffset = fab.shadowXOffset
+        shadowYOffset = fab.shadowYOffset
         mShowShadow = fab.hasShadow()
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setBackgroundCompat(drawable: Drawable) {
         if (Util.isJellyBean()) {
             background = drawable
@@ -173,7 +170,6 @@ class Label @JvmOverloads constructor(
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     internal fun onActionDown() {
         if (mUsingStyle) {
             mBackgroundDrawable = background
@@ -191,7 +187,6 @@ class Label @JvmOverloads constructor(
         //        setPressed(true);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     internal fun onActionUp() {
         if (mUsingStyle) {
             mBackgroundDrawable = background
